@@ -16,7 +16,7 @@ export class TodosService {
     try {
       const response = await this.todosRepository.insert(createTodosDto);
 
-      console.log({ response });
+      console.log({ response: response.generatedMaps });
 
       return {
         message: 'Todos created success',
