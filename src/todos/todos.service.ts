@@ -1,17 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
+import { Repository } from 'typeorm';
+import { Todos } from './entities/todos.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TodosService {
-  create(createTodosDto: CreateTodosDto) {
-    console.log(createTodosDto);
-    return {
-      message: 'Todos created success',
-      status: 200,
-      success: true,
-      data: [],
-    };
+  constructor(
+    @InjectRepository(Todos)
+    private todosRepository: Repository<Todos>,
+  ) {}
+
+  async create(createTodosDto: CreateTodosDto) {
+    try {
+      const response = await this.todosRepository.insert(createTodosDto);
+
+      console.log({ response });
+
+      return {
+        message: 'Todos created success',
+        status: 200,
+        success: true,
+        data: [],
+      };
+    } catch (error) {
+      return {
+        message: error.message,
+        success: false,
+        data: null,
+      };
+    }
   }
 
   findAll({ searchParams }) {
