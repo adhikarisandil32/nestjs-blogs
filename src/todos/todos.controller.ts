@@ -18,8 +18,8 @@ import { UpdateTodosDto } from './dto/update-todos.dto';
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
-  @Post()
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
+  @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() createTodoDto: CreateTodosDto) {
     return this.todosService.create(createTodoDto);
