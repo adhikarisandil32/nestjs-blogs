@@ -14,20 +14,10 @@ export class TodosService {
 
   async create(createTodosDto: CreateTodosDto) {
     try {
-<<<<<<< Updated upstream
-      const response = this.todosRepository.insert(createTodosDto);
+      const response = await this.todosRepository.insert(createTodosDto);
 
       // if used this.todosRepository.create(createTodosDto), then manually it has to be saved like below commented code.
       // await this.todosRepository.save(response);
-=======
-      console.log('we are here');
-      const response = this.todosRepository.create(createTodosDto);
-
-      console.log({ response });
-
-      console.log('we are past that');
-      // console.log({ response: response.generatedMaps });
->>>>>>> Stashed changes
 
       return {
         message: 'Todos created success',
@@ -44,24 +34,54 @@ export class TodosService {
     }
   }
 
-  findAll({ searchParams }) {
+  async findAll({ searchParams }) {
+    const data = await this.todosRepository.find({
+      select: { id: true, isCompleted: true, title: true },
+    });
     return {
       message: 'Todos fetch success',
       status: 200,
       success: true,
-      data: [],
+      data,
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: number) {
+    const data = await this.todosRepository.findOne({ where: { id } });
+
+    return {
+      message: 'Todos create success',
+      status: 200,
+      success: true,
+      data,
+    };
   }
 
-  update(id: number, updateTodosDto: UpdateTodosDto) {
-    return `This action updates a #${id} todo`;
+  async update(id: number, updateTodosDto: UpdateTodosDto) {
+    const updatedResult = await Promise.all([
+      this.todosRepository.update({ id }, updateTodosDto),
+      this.todosRepository.findOne({ where: { id } }),
+    ]);
+
+    return {
+      message: 'Todo update success',
+      status: 200,
+      success: true,
+      data: updatedResult[1],
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
+  async remove(id: number) {
+    const result = await Promise.all([
+      await this.todosRepository.delete({ id }),
+      await this.todosRepository.find(),
+    ]);
+
+    return {
+      message: 'Todo delete success',
+      status: 200,
+      success: true,
+      data: result[1],
+    };
   }
 }
