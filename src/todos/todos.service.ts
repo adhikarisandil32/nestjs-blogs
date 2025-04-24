@@ -14,10 +14,20 @@ export class TodosService {
 
   async create(createTodosDto: CreateTodosDto) {
     try {
+<<<<<<< Updated upstream
       const response = this.todosRepository.insert(createTodosDto);
 
       // if used this.todosRepository.create(createTodosDto), then manually it has to be saved like below commented code.
       // await this.todosRepository.save(response);
+=======
+      console.log('we are here');
+      const response = this.todosRepository.create(createTodosDto);
+
+      console.log({ response });
+
+      console.log('we are past that');
+      // console.log({ response: response.generatedMaps });
+>>>>>>> Stashed changes
 
       return {
         message: 'Todos created success',
