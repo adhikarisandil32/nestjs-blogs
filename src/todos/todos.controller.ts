@@ -20,7 +20,9 @@ export class TodosController {
 
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @Post()
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  // below pipe will only validate and put it into body whose dtos are created is validated
+  // @UsePipes(new ValidationPipe({ whitelist: true }))
+  // or look at main.ts to see how validaiton pipe can be used globally
   create(@Body() createTodoDto: CreateTodosDto) {
     return this.todosService.create(createTodoDto);
   }
