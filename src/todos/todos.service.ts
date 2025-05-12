@@ -35,9 +35,19 @@ export class TodosService {
   }
 
   async findAll({ searchParams }) {
+    const sorting: Record<string, string> = {};
+
+    if (searchParams.sort) {
+      const [sortTitle, sortValue] = searchParams.sort.split('.');
+
+      sorting[sortTitle] = sortValue;
+    }
+
     const data = await this.todosRepository.find({
       select: { id: true, isCompleted: true, title: true },
+      order: { ...sorting },
     });
+
     return {
       message: 'Todos fetch success',
       status: 200,
@@ -50,7 +60,7 @@ export class TodosService {
     const data = await this.todosRepository.findOne({ where: { id } });
 
     return {
-      message: 'Todos create success',
+      message: 'Todos fetch success',
       status: 200,
       success: true,
       data,
@@ -72,16 +82,22 @@ export class TodosService {
   }
 
   async remove(id: number) {
-    const result = await Promise.all([
-      await this.todosRepository.delete({ id }),
-      await this.todosRepository.find(),
-    ]);
+    try {
+      await this.todosRepository.delete({ id });
 
-    return {
-      message: 'Todo delete success',
-      status: 200,
-      success: true,
-      data: result[1],
-    };
+      return {
+        message: 'Todo delete success',
+        status: 200,
+        success: true,
+        data: null,
+      };
+    } catch (error) {
+      return {
+        message: error.message ?? 'Deletion Failed',
+        status: 400,
+        success: false,
+        data: null,
+      };
+    }
   }
 }
