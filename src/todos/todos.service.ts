@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
-import { Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsOrder, Repository } from 'typeorm';
 import { Todos } from './entities/todos.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -35,12 +35,22 @@ export class TodosService {
   }
 
   async findAll({ searchParams }) {
-    const sorting: Record<string, string> = {};
+    const sorting = {};
+    // typeof Todos is important. Also see immediate below comment for more type in nest.
+    const validSortKeys: (keyof Todos)[] = [
+      'id',
+      'title',
+      'description',
+      'isCompleted',
+    ];
+
+    // this is also a way to get types with FindOneOptins<Entity>, uncomment below and see for yourself
+    /* const validSortKeys2: FindOneOptions<Todos>['select'] = {}; */
 
     if (searchParams.sort) {
       const [sortTitle, sortValue] = searchParams.sort.split('.');
 
-      sorting[sortTitle] = sortValue;
+      if (validSortKeys.includes(sortTitle)) sorting[sortTitle] = sortValue;
     }
 
     const data = await this.todosRepository.find({
