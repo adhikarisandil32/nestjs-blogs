@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
-import { Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsOrder, Repository } from 'typeorm';
 import { Todos } from './entities/todos.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -35,9 +35,29 @@ export class TodosService {
   }
 
   async findAll({ searchParams }) {
+    const sorting = {};
+    // typeof Todos is important. Also see immediate below comment for more type in nest.
+    const validSortKeys: (keyof Todos)[] = [
+      'id',
+      'title',
+      'description',
+      'isCompleted',
+    ];
+
+    // this is also a way to get types with FindOneOptins<Entity>, uncomment below and see for yourself
+    /* const validSortKeys2: FindOneOptions<Todos>['select'] = {}; */
+
+    if (searchParams.sort) {
+      const [sortTitle, sortValue] = searchParams.sort.split('.');
+
+      if (validSortKeys.includes(sortTitle)) sorting[sortTitle] = sortValue;
+    }
+
     const data = await this.todosRepository.find({
       select: { id: true, isCompleted: true, title: true },
+      order: { ...sorting },
     });
+
     return {
       message: 'Todos fetch success',
       status: 200,
@@ -50,7 +70,7 @@ export class TodosService {
     const data = await this.todosRepository.findOne({ where: { id } });
 
     return {
-      message: 'Todos create success',
+      message: 'Todos fetch success',
       status: 200,
       success: true,
       data,
@@ -72,16 +92,22 @@ export class TodosService {
   }
 
   async remove(id: number) {
-    const result = await Promise.all([
-      await this.todosRepository.delete({ id }),
-      await this.todosRepository.find(),
-    ]);
+    try {
+      await this.todosRepository.delete({ id });
 
-    return {
-      message: 'Todo delete success',
-      status: 200,
-      success: true,
-      data: result[1],
-    };
+      return {
+        message: 'Todo delete success',
+        status: 200,
+        success: true,
+        data: null,
+      };
+    } catch (error) {
+      return {
+        message: error.message ?? 'Deletion Failed',
+        status: 400,
+        success: false,
+        data: null,
+      };
+    }
   }
 }
