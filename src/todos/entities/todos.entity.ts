@@ -1,5 +1,11 @@
-import { User } from 'src/users/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Users } from 'src/users/entities/user.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity()
 export class Todos {
@@ -12,9 +18,10 @@ export class Todos {
   @Column({ nullable: false })
   description: string;
 
-  @Column({ default: false, nullable: false })
+  @Column({ name: 'is_completed', default: false, nullable: false })
   isCompleted: boolean;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false })
-  user: User;
+  @ManyToOne(() => Users, (user) => user.id, { nullable: false })
+  @JoinColumn({ name: 'user_id' })
+  user: Users;
 }
