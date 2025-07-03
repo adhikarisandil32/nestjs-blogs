@@ -1,30 +1,25 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { TodosModule } from './todos/todos.module';
 import { UsersModule } from './users/users.module';
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 dotenv.config();
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      // type: 'sqlite',
-      // database: 'database/db.sqlite',
-      // entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      // migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-      // synchronize: false,
-      // retryAttempts: 10,
-      // retryDelay: 1000,
       useFactory: () => ({
-        type: 'sqlite',
-        database: 'database/db.sqlite',
+        type: 'postgres',
+        username: process.env.DATABASE_USERNAME,
+        password: process.env.DATABASE_PASSWORD,
+        database: process.env.DATABASE_NAME,
+        host: 'localhost',
+        port: 5439,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         synchronize: false,
-        retryAttempts: 10,
-        retryDelay: 1000,
       }),
       dataSourceFactory: async (options) => {
         const datasource = await new DataSource(options).initialize();
