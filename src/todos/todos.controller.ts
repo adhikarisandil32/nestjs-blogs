@@ -7,8 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  ValidationPipe,
-  UsePipes,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodosDto } from './dto/create-todos.dto';
