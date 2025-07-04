@@ -16,7 +16,7 @@ dotenv.config();
         password: process.env.DATABASE_PASSWORD,
         database: process.env.DATABASE_NAME,
         host: 'localhost',
-        port: 5439,
+        port: Number(process.env.DATABASE_PORT),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         synchronize: false,
