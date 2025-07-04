@@ -1,17 +1,9 @@
+import { DBBaseEntity } from 'src/common-modules/database/base.entity';
 import { Users } from 'src/users/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity()
-export class Todos {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Todos extends DBBaseEntity {
   @Column({ nullable: false })
   title: string;
 
