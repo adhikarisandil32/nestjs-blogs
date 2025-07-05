@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'nestjs-pino';
 
 dotenv.config();
 
@@ -25,6 +26,13 @@ dotenv.config();
         const datasource = await new DataSource(options).initialize();
 
         return datasource;
+      },
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: 'pino-pretty',
+        },
       },
     }),
     TodosModule,
