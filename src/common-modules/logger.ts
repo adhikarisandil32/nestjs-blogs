@@ -1,5 +1,6 @@
 import { ConsoleLogger } from '@nestjs/common';
 
+// for custom logging only, for e.g. whenever needed, inject it and then start using
 export class MyLogger extends ConsoleLogger {
   log(message: any, context?: string) {
     if (
