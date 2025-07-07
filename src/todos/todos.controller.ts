@@ -11,7 +11,7 @@ import {
 import { TodosService } from './todos.service';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation } from '@nestjs/swagger';
 
 @Controller('todos')
 export class TodosController {
@@ -46,6 +46,7 @@ export class TodosController {
   }
 
   @ApiOperation({ summary: 'Delete a todo' })
+  // @ApiExcludeEndpoint() - this will hide the endpoint from swagger
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.todosService.remove(+id);
