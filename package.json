@@ -21,7 +21,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:create": "npm run typeorm -- migration:create",
     "migration:generate": "npm run typeorm -- -d src/data-source.ts migration:generate",
-    "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run"
+    "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run",
+    "say-hello": "ts-node src/cli.ts hello"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -29,6 +30,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
     "dotenv": "^16.4.7",
+    "nest-commander": "^3.17.0",
     "nestjs-pino": "^4.4.0",
     "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.0",
