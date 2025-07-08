@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { SeedDatabase } from './db-seed.command';
-// import { UsersService } from '../users/users.service';
 import { MyLogger } from '../common-modules/logger.service';
 
 @Module({
