@@ -1,4 +1,4 @@
-import { DBBaseEntity } from 'src/common-modules/database/base.entity';
+import { DBBaseEntity } from '../../common-modules/database/base.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity()

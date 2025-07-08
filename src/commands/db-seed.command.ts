@@ -1,5 +1,5 @@
 import { Command, CommandRunner } from 'nest-commander';
-import { MyLogger } from 'src/common-modules/logger.service';
+import { MyLogger } from '../common-modules/logger.service';
 
 @Command({ name: 'hello', description: 'a hello command' })
 export class SeedDatabase extends CommandRunner {
@@ -8,6 +8,8 @@ export class SeedDatabase extends CommandRunner {
   }
 
   async run(): Promise<void> {
-    this._loggerService.log('Hello, Nest Developer');
+    return this._loggerService.log(
+      `Hello, Nest Developer, time: ${new Date().toISOString()}`,
+    );
   }
 }
