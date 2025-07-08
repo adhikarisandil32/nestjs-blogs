@@ -22,7 +22,7 @@
     "migration:create": "npm run typeorm -- migration:create",
     "migration:generate": "npm run typeorm -- -d src/data-source.ts migration:generate",
     "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run",
-    "say-hello": "ts-node src/cli.ts hello"
+    "seed:users": "ts-node src/cli.ts seed-users"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -37,6 +37,7 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
+    "@faker-js/faker": "^9.9.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/swagger": "^11.2.0",
