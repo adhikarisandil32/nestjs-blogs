@@ -1,14 +1,14 @@
-import { Todos } from 'src/todos/entities/todos.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { DBBaseEntity } from '../../common-modules/database/base.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Users extends DBBaseEntity {
   @Column({ nullable: false })
   name: string;
 
   @Column({ nullable: false, unique: true })
   email: string;
+
+  @Column({ nullable: false })
+  password: string;
 }

@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TodosModule } from './todos/todos.module';
-import { UsersModule } from './users/users.module';
-import * as dotenv from 'dotenv';
-import { DataSource } from 'typeorm';
+import { SeedDatabase } from './db-seed.command';
+import { MyLogger } from '../common-modules/logger.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoggerModule } from 'nestjs-pino';
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// console.log(__dirname)
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -18,8 +18,7 @@ dotenv.config();
         database: process.env.DATABASE_NAME,
         host: 'localhost',
         port: Number(process.env.DATABASE_PORT),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+        entities: [__dirname + './../**/*.entity{.ts,.js}'], // console.log(__dirname) to see where it is looking entities from
         synchronize: false,
       }),
       dataSourceFactory: async (options) => {
@@ -28,15 +27,7 @@ dotenv.config();
         return datasource;
       },
     }),
-    LoggerModule.forRoot({
-      pinoHttp: {
-        transport: {
-          target: 'pino-pretty',
-        },
-      },
-    }),
-    TodosModule,
-    UsersModule,
   ],
+  providers: [SeedDatabase, MyLogger],
 })
-export class AppModule {}
+export class CliModule {}
