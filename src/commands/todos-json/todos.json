@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Organize weekly team meeting",
+    "description": "Schedule and prepare agenda items for the upcoming team meeting this Friday."
+  },
+  {
+    "title": "Write Q3 budget report",
+    "description": "Compile and analyze all departmental budgets for the third quarter and finalize the report."
+  },
+  {
+    "title": "Update project timeline",
+    "description": "Adjust the timeline in Asana based on recent client feedback and task delays."
+  },
+  {
+    "title": "Design client feedback form",
+    "description": "Create a digital form to gather post-project feedback from clients to improve future workflows."
+  },
+  {
+    "title": "Review legal compliance documents",
+    "description": "Ensure all updated contracts are in line with the new policy regulations."
+  },
+  {
+    "title": "Draft monthly newsletter content",
+    "description": "Write engaging content for the company's newsletter including updates, wins, and news."
+  },
+  {
+    "title": "Plan product launch timeline",
+    "description": "Coordinate with teams to set deadlines and milestones for the upcoming product launch."
+  },
+  {
+    "title": "Clean and organize shared drive",
+    "description": "Delete duplicates, archive old files, and label folders in the shared company drive."
+  },
+  {
+    "title": "Prepare quarterly performance slides",
+    "description": "Design a slide deck summarizing key metrics and achievements for the last quarter."
+  },
+  {
+    "title": "Set up interview panel",
+    "description": "Confirm availability and roles of the panel members for next week's candidate interviews."
+  },
+  {
+    "title": "Fix website responsiveness bug",
+    "description": "Resolve the layout issue that appears on mobile devices when viewing the homepage."
+  },
+  {
+    "title": "Schedule software upgrade",
+    "description": "Plan and communicate the system downtime required for the upcoming software update."
+  },
+  {
+    "title": "Create training manual draft",
+    "description": "Write a draft version of the new training manual covering system access and tools."
+  },
+  {
+    "title": "Conduct customer churn analysis",
+    "description": "Pull data and identify key reasons why customers canceled their subscriptions this year."
+  },
+  {
+    "title": "Implement password policy update",
+    "description": "Ensure all staff update passwords to meet new security standards by end of week."
+  },
+  {
+    "title": "Record onboarding video",
+    "description": "Film a short onboarding walkthrough for new employees covering login setup and resources."
+  },
+  {
+    "title": "Organize virtual town hall",
+    "description": "Coordinate speakers, agenda, and tech setup for the company-wide virtual meeting."
+  },
+  {
+    "title": "Analyze sales funnel conversion",
+    "description": "Review recent lead-to-sale conversion rates and recommend optimization strategies."
+  },
+  {
+    "title": "Create support team rota",
+    "description": "Draft the upcoming month's shift schedule ensuring fair distribution of weekend shifts."
+  },
+  {
+    "title": "Finalize partnership proposal",
+    "description": "Edit and complete the pitch document before submission to potential partners."
+  },
+  {
+    "title": "Audit billing system for errors",
+    "description": "Go through recent transactions and verify that the billing logic matches expected results."
+  },
+  {
+    "title": "Draft social media content calendar",
+    "description": "Prepare post ideas and campaigns for all platforms for the next month."
+  },
+  {
+    "title": "Test backup server restore process",
+    "description": "Simulate a data loss and perform a backup restore to validate our disaster recovery plan."
+  },
+  {
+    "title": "Revise customer onboarding checklist",
+    "description": "Update steps in the onboarding checklist to reflect recent changes in platform features."
+  }
+]
