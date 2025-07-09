@@ -22,7 +22,8 @@
     "migration:create": "npm run typeorm -- migration:create",
     "migration:generate": "npm run typeorm -- -d src/data-source.ts migration:generate",
     "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run",
-    "seed:users": "ts-node src/cli.ts seed-users"
+    "seed:users": "ts-node src/cli.ts seed-users",
+    "seed:todos": "ts-node src/cli.ts seed-todos"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
