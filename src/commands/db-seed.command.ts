@@ -24,7 +24,7 @@ export class SeedDatabase extends CommandRunner {
       for (let i = 1; i <= 16; i++) {
         await this._dataSource.manager.insert(Users, {
           name: faker.person.fullName(),
-          email: faker.internet.email(),
+          email: faker.internet.email().toLowerCase(),
           password: 'Test@123',
         });
         console.log(`User ${i} inserted`);
