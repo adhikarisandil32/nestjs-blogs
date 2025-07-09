@@ -6,7 +6,7 @@ import { Users } from '../users/entities/user.entity';
 // import { AppDataSource } from '../data-source';
 
 @Command({ name: 'seed-users', description: 'A command to seed users' })
-export class SeedDatabase extends CommandRunner {
+export class SeedUsersDatabase extends CommandRunner {
   // private readonly _dataSource: DataSource
   constructor(
     private readonly _loggerService: MyLogger,
