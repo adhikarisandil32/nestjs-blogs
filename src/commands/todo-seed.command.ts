@@ -2,7 +2,7 @@ import { Command, CommandRunner } from 'nest-commander';
 import { MyLogger } from '../common-modules/logger.service';
 import { DataSource } from 'typeorm';
 import { Todos } from '../todos/entities/todos.entity';
-const todosJson = require('./todos.json');
+const todosJson = require('./todos-json/todos.json');
 
 @Command({ name: 'seed-todos', description: 'A command to seed todos' })
 export class SeedTodoDatabase extends CommandRunner {
