@@ -13,7 +13,13 @@ async function bootstrap() {
     .build();
   const todosDocument = () =>
     SwaggerModule.createDocument(app, swaggerDocumentBuild);
-  SwaggerModule.setup('api-docs', app, todosDocument);
+  SwaggerModule.setup('api-docs', app, todosDocument, {
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      docExpansion: false,
+    },
+    // Visit https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/ for more swagger options
+  });
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
