@@ -33,7 +33,16 @@ export class UsersService {
 
   async findAll() {
     try {
-      const users = await this.usersRepository.find();
+      const users = await this.usersRepository.find({
+        select: {
+          createdAt: true,
+          deletedAt: true,
+          updatedAt: true,
+          email: true,
+          id: true,
+          name: true,
+        },
+      });
 
       return {
         message: 'User Listing success',
