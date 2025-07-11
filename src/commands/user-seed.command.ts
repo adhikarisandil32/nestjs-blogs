@@ -22,11 +22,13 @@ export class SeedUsersDatabase extends CommandRunner {
     try {
       this._loggerService.log('Starting User Seed');
       for (let i = 1; i <= 16; i++) {
-        await this._dataSource.manager.insert(Users, {
+        const user = this._dataSource.manager.create(Users, {
           name: faker.person.fullName(),
           email: faker.internet.email().toLowerCase(),
           password: 'Test@123',
         });
+        await this._dataSource.manager.save(user);
+        // using save is important because user entity uses @BeforeInsert decorator which will only act when save used
         console.log(`User ${i} inserted`);
       }
       this._loggerService.log('User Seeding Successful');
