@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
 import { Todos } from './entities/todos.entity';
@@ -34,6 +34,37 @@ export class TodosService {
     }
   }
 
+  async findAllPaginated({ searchParams }) {
+    const sorting = {};
+    const validSortKeys: (keyof Todos)[] = [
+      'id',
+      'title',
+      'description',
+      'isCompleted',
+    ];
+
+    if (searchParams.sort) {
+      const [sortTitle, sortValue] = searchParams.sort.split('.');
+
+      if (validSortKeys.includes(sortTitle))
+        sorting[sortTitle] = sortValue.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    }
+
+    const currentPage =
+      +(searchParams.page ?? 1) > 1 ? +(searchParams.page ?? 1) : 1;
+    const limit = +(searchParams.limit ?? 10);
+    const offset = (currentPage - 1) * limit;
+
+    const [data, count] = await this.todosRepository.findAndCount({
+      select: { id: true, isCompleted: true, title: true },
+      order: { ...sorting },
+      take: limit,
+      skip: offset,
+    });
+
+    return { data, count };
+  }
+
   async findAll({ searchParams }) {
     const sorting = {};
     // typeof Todos is important. Also see immediate below comment for more type in nest.
@@ -44,8 +75,8 @@ export class TodosService {
       'isCompleted',
     ];
 
-    // this is also a way to get types with FindOneOptins<Entity>, uncomment below and see for yourself
-    /* const validSortKeys2: FindOneOptions<Todos>['select'] = {}; */
+    // this is also a way to get types with FindOneOptions<Entity>, uncomment below and see for yourself
+    // const validSortKeys2: FindOneOptions<Todos>['select'] = {};
 
     if (searchParams.sort) {
       const [sortTitle, sortValue] = searchParams.sort.split('.');
@@ -59,9 +90,6 @@ export class TodosService {
     });
 
     return {
-      message: 'Todos fetch success',
-      status: 200,
-      success: true,
       data,
     };
   }
@@ -69,12 +97,7 @@ export class TodosService {
   async findOne(id: number) {
     const data = await this.todosRepository.findOne({ where: { id } });
 
-    return {
-      message: 'Todos fetch success',
-      status: 200,
-      success: true,
-      data,
-    };
+    return data;
   }
 
   async update(id: number, updateTodosDto: UpdateTodosDto) {

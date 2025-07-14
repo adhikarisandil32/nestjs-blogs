@@ -7,11 +7,16 @@ import {
   Patch,
   Post,
   Query,
+  SetMetadata,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
 import { TodosService } from './todos.service';
+import {
+  ResponseMessage,
+  ShowPagination,
+} from '../../common-modules/response/decorators/response.decorator';
 
 @Controller('todos')
 export class TodosController {
@@ -28,12 +33,26 @@ export class TodosController {
   }
 
   @ApiOperation({ summary: 'List all todos' })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'integer',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'integer',
+  })
   @Get()
-  findAll(@Query() searchParams: Record<string, any>): {} {
-    return this.todosService.findAll({ searchParams });
+  @ResponseMessage('Todos fetch success')
+  @ShowPagination()
+  // @SetMetadata('ShowPagination', true)
+  findAllPaginated(@Query() searchParams: Record<string, any>): {} {
+    return this.todosService.findAllPaginated({ searchParams });
   }
 
   @ApiOperation({ summary: 'List a todos by id' })
+  @ResponseMessage('Todo fetch success')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.todosService.findOne(+id);
