@@ -40,10 +40,8 @@ export class AuthService {
     );
 
     return {
-      message: 'User Login success',
-      status: 200,
-      success: true,
-      data: { ...otherData, accessToken },
+      ...otherData,
+      accessToken,
     };
   }
 
