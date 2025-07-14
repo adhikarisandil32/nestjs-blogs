@@ -1,4 +1,4 @@
-import { DBBaseEntity } from '../../common-modules/database/base.entity';
+import { DBBaseEntity } from '../../../common-modules/database/base.entity';
 import { Users } from '../../users/entities/user.entity';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 

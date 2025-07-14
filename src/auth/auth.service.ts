@@ -4,9 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Users } from '../users/entities/user.entity';
 import { authDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
+import { Users } from '../modules/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()

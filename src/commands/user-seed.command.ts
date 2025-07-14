@@ -2,7 +2,7 @@ import { Command, CommandRunner } from 'nest-commander';
 import { MyLogger } from '../common-modules/logger.service';
 import { DataSource } from 'typeorm';
 import { faker } from '@faker-js/faker';
-import { Users } from '../users/entities/user.entity';
+import { Users } from '../modules/users/entities/user.entity';
 // import { AppDataSource } from '../data-source';
 
 @Command({ name: 'seed-users', description: 'A command to seed users' })

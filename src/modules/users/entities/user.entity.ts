@@ -1,7 +1,6 @@
-import { DBBaseEntity } from '../../common-modules/database/base.entity';
+import { DBBaseEntity } from '../../../common-modules/database/base.entity';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Users extends DBBaseEntity {
