@@ -95,9 +95,11 @@ export class TodosService {
   }
 
   async findOne(id: number) {
-    const data = await this.todosRepository.findOne({ where: { id } });
+    const data = await this.todosRepository.findOne({
+      where: { id },
+    });
 
-    return data;
+    return { data };
   }
 
   async update(id: number, updateTodosDto: UpdateTodosDto) {
