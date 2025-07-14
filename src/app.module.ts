@@ -4,6 +4,7 @@ import { DatabaseModule } from './common-modules/database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { TodosModule } from './modules/todos/todos.module';
 import { UsersModule } from './modules/users/users.module';
+import { ResponseModule } from './common-modules/response/respose.module';
 
 @Module({
   imports: [
@@ -15,9 +16,10 @@ import { UsersModule } from './modules/users/users.module';
         },
       },
     }),
+    ResponseModule,
+    AuthModule,
     TodosModule,
     UsersModule,
-    AuthModule,
   ],
 })
 export class AppModule {}
