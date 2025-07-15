@@ -8,6 +8,7 @@ import { authDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { Users } from '../modules/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +45,7 @@ export class AuthService {
     };
   }
 
-  findOne() {
-    return { data: 'lajkdflasdlfjasl' };
+  findMe(request: Request) {
+    return request?.['user'];
   }
 }

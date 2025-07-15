@@ -1,9 +1,16 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Request as NestRequest,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { authDto } from './dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
 import { AuthGuard } from './decorator/auth-guard.decorator';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -15,11 +22,11 @@ export class AuthController {
     return this.authService.login(authDto);
   }
 
-  @ResponseMessage('User fetch success')
-  @Get('me')
+  @ResponseMessage('logged in user detail fetch success')
   @AuthGuard()
   @ApiBearerAuth()
-  me() {
-    return this.authService.findOne();
+  @Get('me')
+  me(@NestRequest() request: Request) {
+    return this.authService.findMe(request);
   }
 }
