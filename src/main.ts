@@ -19,6 +19,7 @@ async function bootstrap() {
     swaggerOptions: {
       tagsSorter: 'alpha',
       docExpansion: false,
+      persistAuthorization: true, // to persist authorization on browser reload
     },
     // Visit https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/ for more swagger options
   });
