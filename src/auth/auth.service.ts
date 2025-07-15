@@ -40,12 +40,11 @@ export class AuthService {
     );
 
     return {
-      ...otherData,
-      accessToken,
+      data: { ...otherData, accessToken },
     };
   }
 
   findOne() {
-    return `This action returns a logged in auth`;
+    return { data: 'lajkdflasdlfjasl' };
   }
 }
