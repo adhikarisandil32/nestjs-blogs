@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
 import { Todos } from './entities/todos.entity';
+import { Request as IRequest } from 'express';
 
 @Injectable()
 export class TodosService {
@@ -12,8 +13,18 @@ export class TodosService {
     private todosRepository: Repository<Todos>,
   ) {}
 
-  async create(createTodosDto: CreateTodosDto): Promise<{ data: Todos }> {
-    const newTodo = this.todosRepository.create(createTodosDto);
+  async create(
+    request: IRequest,
+    createTodosDto: CreateTodosDto,
+  ): Promise<{ data: Todos }> {
+    const newTodo = this.todosRepository.create({
+      // title: createTodosDto.title,
+      // isCompleted: createTodosDto.isCompleted,
+      // description: createTodosDto.description,
+      ...createTodosDto,
+      user: request?.['user'].id,
+    });
+
     await this.todosRepository.save(newTodo);
 
     // if used this.todosRepository.insert(createTodosDto), then it doesn't need to be manually saved unlike above
@@ -23,9 +34,10 @@ export class TodosService {
     };
   }
 
-  async findAllPaginated({
-    searchParams,
-  }): Promise<{ data: Todos[]; count: number }> {
+  async findAllPaginated(
+    request: IRequest,
+    { searchParams },
+  ): Promise<{ data: Todos[]; count: number }> {
     const sorting = {};
     const validSortKeys: (keyof Todos)[] = [
       'id',
@@ -47,6 +59,11 @@ export class TodosService {
     const offset = (currentPage - 1) * limit;
 
     const [data, count] = await this.todosRepository.findAndCount({
+      where: {
+        user: {
+          id: request?.['user'].id,
+        },
+      },
       select: { id: true, isCompleted: true, title: true },
       order: { ...sorting },
       take: limit,
