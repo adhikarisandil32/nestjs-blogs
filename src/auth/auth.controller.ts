@@ -2,6 +2,8 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { authDto } from './dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
+import { AuthGuard } from './decorator/auth-guard.decorator';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +17,8 @@ export class AuthController {
 
   @ResponseMessage('User fetch success')
   @Get('me')
+  @AuthGuard()
+  @ApiBearerAuth()
   me() {
     return this.authService.findOne();
   }
