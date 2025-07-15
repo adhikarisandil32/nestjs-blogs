@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
 import { TodosService } from './todos.service';
@@ -16,6 +16,7 @@ import {
   ResponseMessage,
   ShowPagination,
 } from '../../common-modules/response/decorators/response.decorator';
+import { AuthGuard } from '../../auth/decorator/auth-guard.decorator';
 
 @Controller('todos')
 export class TodosController {
@@ -43,9 +44,11 @@ export class TodosController {
     required: false,
     type: 'integer',
   })
+  @ApiBearerAuth()
   @Get()
   @ResponseMessage('Todos fetch success')
   @ShowPagination()
+  @AuthGuard()
   // @SetMetadata('ShowPagination', true)
   findAllPaginated(@Query() searchParams: Record<string, any>): {} {
     return this.todosService.findAllPaginated({ searchParams });
@@ -66,7 +69,7 @@ export class TodosController {
   }
 
   @ApiOperation({ summary: 'Delete a todo' })
-  // @ApiExcludeEndpoint() - this will hide the endpoint from swagger
+  // @ApiExcludeEndpoint() // this will hide the endpoint from swagger
   @ResponseMessage('Todo delete success')
   @Delete(':id')
   remove(@Param('id') id: string) {
