@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Request, Response } from 'express';
+import { IPaginationMetadata } from './interfaces/pagination-metadata.interface';
 
 export class ResponseInterceptor implements NestInterceptor {
   constructor(@Inject() private readonly _reflector: Reflector) {}
@@ -39,7 +40,7 @@ export class ResponseInterceptor implements NestInterceptor {
           };
         }
 
-        const _paginationMetadata = {
+        const _paginationMetadata: IPaginationMetadata = {
           total: count,
           limit: Number(request.query?.limit ?? 10),
           page: Number(request.query?.page ?? 1),
