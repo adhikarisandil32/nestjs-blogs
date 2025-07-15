@@ -14,6 +14,7 @@ async function bootstrap() {
   const todosDocument = () =>
     SwaggerModule.createDocument(app, swaggerDocumentBuild);
   SwaggerModule.setup('api-docs', app, todosDocument, {
+    customSiteTitle: 'Blogging App Backend',
     swaggerOptions: {
       tagsSorter: 'alpha',
       docExpansion: false,
