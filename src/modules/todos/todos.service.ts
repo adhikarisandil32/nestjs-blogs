@@ -12,29 +12,20 @@ export class TodosService {
     private todosRepository: Repository<Todos>,
   ) {}
 
-  async create(createTodosDto: CreateTodosDto) {
-    try {
-      const response = await this.todosRepository.insert(createTodosDto);
+  async create(createTodosDto: CreateTodosDto): Promise<{ data: Todos }> {
+    const newTodo = this.todosRepository.create(createTodosDto);
+    await this.todosRepository.save(newTodo);
 
-      // if used this.todosRepository.create(createTodosDto), then manually it has to be saved like below commented code.
-      // await this.todosRepository.save(response);
+    // if used this.todosRepository.insert(createTodosDto), then it doesn't need to be manually saved unlike above
 
-      return {
-        message: 'Todos created success',
-        status: 200,
-        success: true,
-        data: [],
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        success: false,
-        data: null,
-      };
-    }
+    return {
+      data: newTodo,
+    };
   }
 
-  async findAllPaginated({ searchParams }) {
+  async findAllPaginated({
+    searchParams,
+  }): Promise<{ data: Todos[]; count: number }> {
     const sorting = {};
     const validSortKeys: (keyof Todos)[] = [
       'id',
@@ -65,7 +56,7 @@ export class TodosService {
     return { data, count };
   }
 
-  async findAll({ searchParams }) {
+  async findAll({ searchParams }): Promise<{ data: Todos[] }> {
     const sorting = {};
     // typeof Todos is important. Also see immediate below comment for more type in nest.
     const validSortKeys: (keyof Todos)[] = [
@@ -94,7 +85,7 @@ export class TodosService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<{ data: Todos }> {
     const data = await this.todosRepository.findOne({
       where: { id },
     });
@@ -102,37 +93,28 @@ export class TodosService {
     return { data };
   }
 
-  async update(id: number, updateTodosDto: UpdateTodosDto) {
-    const updatedResult = await Promise.all([
-      this.todosRepository.update({ id }, updateTodosDto),
-      this.todosRepository.findOne({ where: { id } }),
-    ]);
+  async update(
+    id: number,
+    updateTodosDto: UpdateTodosDto,
+  ): Promise<{ data: Todos }> {
+    await this.todosRepository.update({ id }, updateTodosDto);
+
+    const updatedResult = await this.todosRepository.findOne({
+      where: {
+        id,
+      },
+    });
 
     return {
-      message: 'Todo update success',
-      status: 200,
-      success: true,
-      data: updatedResult[1],
+      data: updatedResult,
     };
   }
 
-  async remove(id: number) {
-    try {
-      await this.todosRepository.delete({ id });
+  async remove(id: number): Promise<{ data: null }> {
+    await this.todosRepository.delete({ id });
 
-      return {
-        message: 'Todo delete success',
-        status: 200,
-        success: true,
-        data: null,
-      };
-    } catch (error) {
-      return {
-        message: error.message ?? 'Deletion Failed',
-        status: 400,
-        success: false,
-        data: null,
-      };
-    }
+    return {
+      data: null,
+    };
   }
 }
