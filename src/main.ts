@@ -10,10 +10,18 @@ async function bootstrap() {
     .setTitle('Todos API Documentation')
     .setDescription('This is the API documentation for the todo app.')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const todosDocument = () =>
     SwaggerModule.createDocument(app, swaggerDocumentBuild);
-  SwaggerModule.setup('api-docs', app, todosDocument);
+  SwaggerModule.setup('api-docs', app, todosDocument, {
+    customSiteTitle: 'Blogging App Backend',
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      docExpansion: false,
+    },
+    // Visit https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/ for more swagger options
+  });
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

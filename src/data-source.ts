@@ -9,7 +9,7 @@ export const AppDataSource: DataSource = new DataSource({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   host: 'localhost',
-  port: Number(process.env.DATABASE_PORT),
+  port: +process.env.DATABASE_PORT,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
   synchronize: false,
