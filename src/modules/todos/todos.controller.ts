@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   Query,
-  SetMetadata,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CreateTodosDto } from './dto/create-todos.dto';
@@ -25,6 +24,7 @@ export class TodosController {
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
   @Post()
+  @ResponseMessage('Todo create success')
   // below pipe will only validate and put it into body whose dtos are created is validated
   // @UsePipes(new ValidationPipe({ whitelist: true }))
   // or look at main.ts to see how validaiton pipe can be used globally
@@ -59,6 +59,7 @@ export class TodosController {
   }
 
   @ApiOperation({ summary: 'Update a todo' })
+  @ResponseMessage('Update todo success')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTodosDto: UpdateTodosDto) {
     return this.todosService.update(+id, updateTodosDto);
@@ -66,6 +67,7 @@ export class TodosController {
 
   @ApiOperation({ summary: 'Delete a todo' })
   // @ApiExcludeEndpoint() - this will hide the endpoint from swagger
+  @ResponseMessage('Todo delete success')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.todosService.remove(+id);
