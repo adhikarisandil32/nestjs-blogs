@@ -10,6 +10,7 @@ async function bootstrap() {
     .setTitle('Todos API Documentation')
     .setDescription('This is the API documentation for the todo app.')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const todosDocument = () =>
     SwaggerModule.createDocument(app, swaggerDocumentBuild);
