@@ -43,9 +43,7 @@ export class UsersService {
       },
     });
 
-    return {
-      data: users,
-    };
+    return users;
   }
 
   async findOne(id: number) {
@@ -63,9 +61,7 @@ export class UsersService {
       },
     });
 
-    return {
-      data: user,
-    };
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
