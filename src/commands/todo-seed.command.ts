@@ -1,19 +1,20 @@
-import { Command, CommandRunner } from 'nest-commander';
-import { MyLogger } from '../common-modules/logger.service';
+import { MyLogger } from 'src/common-modules/logger.service';
 import { DataSource } from 'typeorm';
-import { Todos } from '../modules/todos/entities/todos.entity';
-const todosJson = require('./todos-json/todos.json');
+import { Todos } from 'src/modules/todos/entities/todos.entity';
+import { Command } from 'nestjs-command';
+import { Injectable } from '@nestjs/common';
 
-@Command({ name: 'seed-todos', description: 'A command to seed todos' })
-export class SeedTodoDatabase extends CommandRunner {
+@Injectable()
+export class SeedTodoDatabase {
   constructor(
     private readonly _loggerService: MyLogger,
     private readonly _dataSource: DataSource,
-  ) {
-    super();
-  }
+  ) {}
 
+  @Command({ command: 'seed-todos', describe: 'A command to seed todos' })
   async run(): Promise<void> {
+    const todosJson = require('./todos-json/todos.json');
+
     try {
       this._loggerService.log('Starting Todos Seed');
       for (let i = 0; i < todosJson.length; i++) {
