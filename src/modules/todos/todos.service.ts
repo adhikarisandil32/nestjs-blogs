@@ -16,7 +16,7 @@ export class TodosService {
   async create(
     request: IRequest,
     createTodosDto: CreateTodosDto,
-  ): Promise<{ data: Todos }> {
+  ): Promise<Todos> {
     const newTodo = this.todosRepository.create({
       // title: createTodosDto.title,
       // isCompleted: createTodosDto.isCompleted,
@@ -29,9 +29,7 @@ export class TodosService {
 
     // if used this.todosRepository.insert(createTodosDto), then it doesn't need to be manually saved unlike above
 
-    return {
-      data: newTodo,
-    };
+    return newTodo;
   }
 
   async findAllPaginated(
@@ -73,47 +71,40 @@ export class TodosService {
     return { data, count };
   }
 
-  async findAll({ searchParams }): Promise<{ data: Todos[] }> {
-    const sorting = {};
-    // typeof Todos is important. Also see immediate below comment for more type in nest.
-    const validSortKeys: (keyof Todos)[] = [
-      'id',
-      'title',
-      'description',
-      'isCompleted',
-    ];
+  // async findAll({ searchParams }): Promise<Todos[]> {
+  //   const sorting = {};
+  //   // typeof Todos is important. Also see immediate below comment for more type in nest.
+  //   const validSortKeys: (keyof Todos)[] = [
+  //     'id',
+  //     'title',
+  //     'description',
+  //     'isCompleted',
+  //   ];
 
-    // this is also a way to get types with FindOneOptions<Entity>, uncomment below and see for yourself
-    // const validSortKeys2: FindOneOptions<Todos>['select'] = {};
+  //   // this is also a way to get types with FindOneOptions<Entity>, uncomment below and see for yourself
+  //   // const validSortKeys2: FindOneOptions<Todos>['select'] = {};
 
-    if (searchParams.sort) {
-      const [sortTitle, sortValue] = searchParams.sort.split('.');
+  //   if (searchParams.sort) {
+  //     const [sortTitle, sortValue] = searchParams.sort.split('.');
 
-      if (validSortKeys.includes(sortTitle)) sorting[sortTitle] = sortValue;
-    }
+  //     if (validSortKeys.includes(sortTitle)) sorting[sortTitle] = sortValue;
+  //   }
 
-    const data = await this.todosRepository.find({
-      select: { id: true, isCompleted: true, title: true },
-      order: { ...sorting },
-    });
+  //   const data = await this.todosRepository.find({
+  //     select: { id: true, isCompleted: true, title: true },
+  //     order: { ...sorting },
+  //   });
 
-    return {
-      data,
-    };
-  }
+  //   return data;
+  // }
 
-  async findOne(id: number): Promise<{ data: Todos }> {
-    const data = await this.todosRepository.findOne({
+  async findOne(id: number): Promise<Todos> {
+    return await this.todosRepository.findOne({
       where: { id },
     });
-
-    return { data };
   }
 
-  async update(
-    id: number,
-    updateTodosDto: UpdateTodosDto,
-  ): Promise<{ data: Todos }> {
+  async update(id: number, updateTodosDto: UpdateTodosDto): Promise<Todos> {
     await this.todosRepository.update({ id }, updateTodosDto);
 
     const updatedResult = await this.todosRepository.findOne({
@@ -122,16 +113,12 @@ export class TodosService {
       },
     });
 
-    return {
-      data: updatedResult,
-    };
+    return updatedResult;
   }
 
-  async remove(id: number): Promise<{ data: null }> {
+  async remove(id: number): Promise<null> {
     await this.todosRepository.delete({ id });
 
-    return {
-      data: null,
-    };
+    return null;
   }
 }
