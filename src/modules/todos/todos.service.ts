@@ -22,7 +22,7 @@ export class TodosService {
       // isCompleted: createTodosDto.isCompleted,
       // description: createTodosDto.description,
       ...createTodosDto,
-      user: request?.['user'].id,
+      user: request?.['user']?.id,
     });
 
     await this.todosRepository.save(newTodo);
@@ -99,9 +99,11 @@ export class TodosService {
   // }
 
   async findOne(id: number): Promise<Todos> {
-    return await this.todosRepository.findOne({
+    const data = await this.todosRepository.findOne({
       where: { id },
     });
+
+    return data;
   }
 
   async update(id: number, updateTodosDto: UpdateTodosDto): Promise<Todos> {
