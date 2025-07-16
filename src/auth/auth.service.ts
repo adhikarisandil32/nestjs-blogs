@@ -40,12 +40,10 @@ export class AuthService {
       { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
     );
 
-    return {
-      data: { ...otherData, accessToken },
-    };
+    return { ...otherData, accessToken };
   }
 
-  findMe(request: Request) {
+  findMe(request: Request): { data: Users } {
     return request?.['user'];
   }
 }
