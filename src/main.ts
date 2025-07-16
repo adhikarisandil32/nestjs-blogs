@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { Todos } from './modules/todos/entities/todos.entity';
 import { TodosModule } from './modules/todos/todos.module';
 import { AuthModule } from './auth/auth.module';
 
