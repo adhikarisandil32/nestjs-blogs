@@ -17,8 +17,8 @@ import {
   ResponseMessage,
   ShowPagination,
 } from '../../common-modules/response/decorators/response.decorator';
-import { AuthGuard } from '../../auth/decorator/auth-guard.decorator';
 import { Request as IRequest } from 'express';
+import { AuthGuard } from '../auth/decorator/auth-guard.decorator';
 
 @Controller('todos')
 export class TodosController {
