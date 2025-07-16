@@ -49,7 +49,7 @@ export class AuthencationGuard implements CanActivate {
     const user = await this._usersService.findOne(decodedData.id);
     if (!user) throw new NotFoundException('request user not available');
 
-    request['user'] = user.data;
+    request['user'] = user;
 
     return;
   }
