@@ -1,11 +1,12 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { DBBaseEntity } from 'src/common-modules/database/base.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
-import { Entity } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 
 @Entity()
-export class Role extends DBBaseEntity {
+export class Roles extends DBBaseEntity {
   @IsNotEmpty()
   @IsEnum(UserRole)
+  @Column({ nullable: false })
   role: UserRole;
 }
