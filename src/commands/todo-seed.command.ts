@@ -15,19 +15,28 @@ export class SeedTodoDatabase {
   async run(): Promise<void> {
     const todosJson = require('./todos-json/todos.json');
 
+    const queryRunner = this._dataSource.createQueryRunner();
+
+    const SeedTodosContext = 'todos-seed';
+
     try {
-      this._loggerService.log('Starting Todos Seed');
+      this._loggerService.log('Starting Todos Seed', SeedTodosContext);
       for (let i = 0; i < todosJson.length; i++) {
-        await this._dataSource.manager.insert(Todos, {
+        const todo = queryRunner.manager.create(Todos, {
           ...todosJson[i],
           isCompleted: Boolean(Math.round(Math.random() * 2)),
           user: Math.ceil(Math.random() * 16),
         });
+        await queryRunner.manager.save(todo);
         console.log(`Todo ${i} inserted`);
       }
-      this._loggerService.log('Todos Seeding Successful');
+      this._loggerService.log('Todos Seeding Successful', SeedTodosContext);
     } catch (error) {
-      console.log(error);
+      this._loggerService.error(
+        error.message,
+        new Error(error).stack,
+        SeedTodosContext,
+      );
     }
   }
 }
