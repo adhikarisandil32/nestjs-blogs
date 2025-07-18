@@ -73,22 +73,30 @@ export class TodosController {
   @Get(':id')
   @AuthGuard()
   @ApiBearerAuth()
-  findOne(@Param('id') id: string, @Request() request: IRequest) {
-    return this.todosService.findOne(+id, request);
+  findOne(@Request() request: IRequest, @Param('id') id: string) {
+    return this.todosService.findOne(request, +id);
   }
 
   @ApiOperation({ summary: 'Update a todo' })
   @ResponseMessage('Update todo success')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTodosDto: UpdateTodosDto) {
-    return this.todosService.update(+id, updateTodosDto);
+  @AuthGuard()
+  @ApiBearerAuth()
+  update(
+    @Request() request: IRequest,
+    @Param('id') id: string,
+    @Body() updateTodosDto: UpdateTodosDto,
+  ) {
+    return this.todosService.update(request, +id, updateTodosDto);
   }
 
   @ApiOperation({ summary: 'Delete a todo' })
   // @ApiExcludeEndpoint() // this will hide the endpoint from swagger
   @ResponseMessage('Todo delete success')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.todosService.remove(+id);
+  @AuthGuard()
+  @ApiBearerAuth()
+  remove(@Request() request: IRequest, @Param('id') id: string) {
+    return this.todosService.remove(request, +id);
   }
 }
