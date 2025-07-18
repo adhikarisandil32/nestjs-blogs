@@ -60,26 +60,25 @@ export async function seedUsers(
   loggerService.log('seeding users', UserSeedingContext);
 
   const existingRoles = await queryRunner.manager.find(Roles);
-  if (!existingRoles) {
-    throw new Error('');
+  if (!existingRoles || (existingRoles && existingRoles.length <= 0)) {
+    throw new Error('roles not available. seed roles first');
   }
-  const userRoleId = existingRoles.find(
+
+  const userRole = existingRoles.find(
     (existingRole) => existingRole.role === UserRole.USER,
-  ).id;
+  );
 
-  // why can't it be role field be passed id when it can be done in todo seed for user
-
-  // for (let i = 1; i <= 16; i++) {
-  //   const user = queryRunner.manager.create(Users, {
-  //     name: faker.person.fullName(),
-  //     email: faker.internet.email().toLowerCase(),
-  //     password: 'Test@123',
-  //     role: userRoleId,
-  //   });
-  //   await queryRunner.manager.save(user);
-  //   // using save is important because user entity uses @BeforeInsert decorator which will only act when save used
-  //   console.log(`User ${i} inserted`);
-  // }
+  for (let i = 1; i <= 20; i++) {
+    const user = queryRunner.manager.create(Users, {
+      name: faker.person.fullName(),
+      email: faker.internet.email().toLowerCase(),
+      password: 'Test@123',
+      role: userRole,
+    });
+    await queryRunner.manager.save(user);
+    // using save is important because user entity uses @BeforeInsert decorator which will only act when save used
+    console.log(`User ${i} inserted`);
+  }
 
   loggerService.log('users seed complete', UserSeedingContext);
 
