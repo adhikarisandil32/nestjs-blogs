@@ -71,8 +71,10 @@ export class TodosController {
   @ApiOperation({ summary: 'List a todos by id' })
   @ResponseMessage('Todo fetch success')
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todosService.findOne(+id);
+  @AuthGuard()
+  @ApiBearerAuth()
+  findOne(@Param('id') id: string, @Request() request: IRequest) {
+    return this.todosService.findOne(+id, request);
   }
 
   @ApiOperation({ summary: 'Update a todo' })
