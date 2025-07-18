@@ -29,7 +29,7 @@ export class ResponseInterceptor implements NestInterceptor {
           context.getHandler(),
         );
 
-        const { data, count } = dataAndCount;
+        const { data, count } = dataAndCount ?? {};
 
         if (!showPagination || count == null) {
           return {
