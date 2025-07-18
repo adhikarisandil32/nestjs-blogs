@@ -19,11 +19,17 @@ export class SeedUsersDatabase {
   async create(): Promise<void> {
     const queryRunner = this._dataSource.createQueryRunner();
 
+    const RoleAndUserSeedContext = 'role-user-seed';
+
     try {
       await seedUserRoles(queryRunner, this._loggerService);
       await seedUsers(queryRunner, this._loggerService);
     } catch (error) {
-      console.error(error);
+      this._loggerService.error(
+        error?.message,
+        error?.stack,
+        RoleAndUserSeedContext,
+      );
     }
   }
 }
