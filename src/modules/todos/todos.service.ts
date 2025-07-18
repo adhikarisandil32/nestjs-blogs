@@ -98,7 +98,7 @@ export class TodosService {
   //   return data;
   // }
 
-  async findOne(id: number, request: IRequest): Promise<Todos> {
+  async findOne(request: IRequest, id: number): Promise<Todos> {
     const requestUserId = request?.['user']?.id;
 
     const data = await this.todosRepository.findOne({
@@ -117,8 +117,25 @@ export class TodosService {
     return data;
   }
 
-  async update(id: number, updateTodosDto: UpdateTodosDto): Promise<Todos> {
-    await this.todosRepository.update({ id }, updateTodosDto);
+  async update(
+    request: IRequest,
+    id: number,
+    updateTodosDto: UpdateTodosDto,
+  ): Promise<Todos> {
+    const requestUserId = request?.['user']?.id;
+    const afterUpdate = await this.todosRepository.update(
+      {
+        id,
+        user: {
+          id: requestUserId,
+        },
+      },
+      updateTodosDto,
+    );
+
+    if (afterUpdate.affected <= 0) {
+      throw new NotFoundException('todo not found');
+    }
 
     const updatedResult = await this.todosRepository.findOne({
       where: {
@@ -129,8 +146,10 @@ export class TodosService {
     return updatedResult;
   }
 
-  async remove(id: number): Promise<null> {
-    await this.todosRepository.delete({ id });
+  async remove(request: IRequest, id: number): Promise<null> {
+    const requestUserId = request?.['user']?.id;
+
+    await this.todosRepository.delete({ id, user: { id: requestUserId } });
 
     return null;
   }
