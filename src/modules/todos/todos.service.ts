@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTodosDto } from './dto/create-todos.dto';
@@ -98,10 +98,21 @@ export class TodosService {
   //   return data;
   // }
 
-  async findOne(id: number): Promise<Todos> {
+  async findOne(id: number, request: IRequest): Promise<Todos> {
+    const requestUserId = request?.['user']?.id;
+
     const data = await this.todosRepository.findOne({
-      where: { id },
+      where: {
+        id,
+        user: {
+          id: requestUserId,
+        },
+      },
     });
+
+    if (!data) {
+      throw new NotFoundException('todo not found');
+    }
 
     return data;
   }
