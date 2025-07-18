@@ -34,13 +34,14 @@ export class SeedTodoDatabase {
     try {
       this._loggerService.log('Starting Todos Seed', SeedTodosContext);
       for (let i = 0; i < todosJson.length; i++) {
+        const randomUser = users[Math.floor(Math.random() * users.length)];
         const todo = queryRunner.manager.create(Todos, {
           ...todosJson[i],
           isCompleted: Boolean(Math.round(Math.random() * 2)),
-          user: users[Math.ceil(Math.random() * users.length)],
+          user: randomUser,
         });
         await queryRunner.manager.save(todo);
-        console.log(`Todo ${i} inserted`);
+        console.log(`Todo ${i + 1} inserted`);
       }
       this._loggerService.log('Todos Seeding Successful', SeedTodosContext);
     } catch (error) {
