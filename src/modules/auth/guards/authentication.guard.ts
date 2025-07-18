@@ -34,19 +34,20 @@ export class AuthencationGuard implements CanActivate {
     }
   }
 
-  async verifyTokenAvailabilityAndAddUser(request: Request) {
+  protected async verifyTokenAvailabilityAndAddUser(request: Request) {
     const [tokenType, token] = request.headers?.authorization?.split(' ') ?? [];
 
+    // console.log({ tokenType, token });
+
     if (!token || tokenType !== 'Bearer')
-      throw new UnauthorizedException(
-        'token unvavailable or token type mismatch',
-      );
+      throw new UnauthorizedException('token unavailable');
 
     const decodedData = this._jwtService.verify<IJwtPayload>(token, {
       secret: process.env.JWT_SECRET,
     });
 
     const user = await this._usersService.findOne(decodedData.id);
+
     if (!user) throw new NotFoundException('request user not available');
 
     request['user'] = user;
