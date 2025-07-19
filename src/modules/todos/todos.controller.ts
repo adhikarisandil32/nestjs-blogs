@@ -13,12 +13,12 @@ import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { CreateTodosDto } from './dto/create-todos.dto';
 import { UpdateTodosDto } from './dto/update-todos.dto';
 import { TodosService } from './todos.service';
+import { Request as IRequest } from 'express';
+import { AuthGuard } from '../auth/decorator/auth-guard.decorator';
 import {
   ResponseMessage,
   ShowPagination,
-} from '../../common-modules/response/decorators/response.decorator';
-import { Request as IRequest } from 'express';
-import { AuthGuard } from '../auth/decorator/auth-guard.decorator';
+} from 'src/common-modules/response/decorators/response.decorator';
 
 @Controller('todos')
 export class TodosController {
