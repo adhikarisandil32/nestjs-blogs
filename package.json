@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-experiments",
+  "name": "nestjs-blog-app",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,8 +22,9 @@
     "migration:create": "npm run typeorm -- migration:create",
     "migration:generate": "npm run typeorm -- -d src/data-source.ts migration:generate",
     "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run",
-    "seed:users": "ts-node src/cli.ts seed-users",
-    "seed:todos": "ts-node src/cli.ts seed-todos"
+    "migration:revert": "npm run typeorm -- -d src/data-source.ts migration:revert",
+    "seed:users": "npx nestjs-command seed-users",
+    "seed:todos": "npx nestjs-command seed-todos"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -33,7 +34,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
-    "nest-commander": "^3.17.0",
+    "nestjs-command": "^3.1.5",
     "nestjs-pino": "^4.4.0",
     "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.0",

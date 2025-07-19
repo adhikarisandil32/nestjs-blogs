@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { TodosModule } from './modules/todos/todos.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,12 +15,16 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
   const todosDocument = () =>
-    SwaggerModule.createDocument(app, swaggerDocumentBuild);
+    SwaggerModule.createDocument(app, swaggerDocumentBuild, {
+      // for excluding modules and routes
+      include: [TodosModule, AuthModule],
+    });
   SwaggerModule.setup('api-docs', app, todosDocument, {
     customSiteTitle: 'Blogging App Backend',
     swaggerOptions: {
-      tagsSorter: 'alpha',
+      tagsSorter: 'alpha', // sort by alphabet
       docExpansion: false,
+      persistAuthorization: true, // to persist authorization on browser reload
     },
     // Visit https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/ for more swagger options
   });

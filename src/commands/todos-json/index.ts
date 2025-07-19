@@ -1,4 +1,5 @@
-const fs = require('fs');
+import fs from 'fs';
+
 const jsonData = require('./todos.json');
 
 const testFn = (jsonData) => {

@@ -29,14 +29,14 @@ export class ResponseInterceptor implements NestInterceptor {
           context.getHandler(),
         );
 
-        const { data, count } = dataAndCount;
+        const { data, count } = dataAndCount ?? {};
 
         if (!showPagination || count == null) {
           return {
             message,
             status: response.statusCode,
             success: response.statusCode < 400,
-            data,
+            ...(dataAndCount ? { data: dataAndCount } : {}),
           };
         }
 

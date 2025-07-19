@@ -6,9 +6,9 @@ import {
 import { DataSource } from 'typeorm';
 import { authDto } from './dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
-import { Users } from '../modules/users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { Users } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -40,12 +40,10 @@ export class AuthService {
       { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
     );
 
-    return {
-      data: { ...otherData, accessToken },
-    };
+    return { ...otherData, accessToken };
   }
 
-  findMe(request: Request) {
+  findMe(request: Request): { data: Users } {
     return request?.['user'];
   }
 }
