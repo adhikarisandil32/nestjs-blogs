@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { DBBaseEntity } from 'src/common-modules/database/base.entity';
+import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Column, Entity } from 'typeorm';
 
