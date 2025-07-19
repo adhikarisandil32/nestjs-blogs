@@ -19,10 +19,21 @@ async function bootstrap() {
       // for excluding modules and routes
       include: [TodosModule, AuthModule],
     });
+
   SwaggerModule.setup('api-docs', app, todosDocument, {
     customSiteTitle: 'Blogging App Backend',
     swaggerOptions: {
-      tagsSorter: 'alpha', // sort by alphabet
+      tagsSorter: (a: string, b: string) => {
+        if (a === 'Auth') return -100;
+        if (b === 'Auth') return 100;
+        // if Auth tag, always keep if a top priority
+        // tags are the names provided in swagger, you can manually provide them using @ApiTags('<tag_name>') on controller
+        // here a and b are tag names
+
+        return a > b ? 1 : -1;
+        //if not then sort alphabetically
+        // or you can go tagsSorter: 'alpha', to sort overall tags alphabetically
+      },
       docExpansion: false,
       persistAuthorization: true, // to persist authorization on browser reload
     },
