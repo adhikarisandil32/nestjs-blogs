@@ -1,3 +1,9 @@
-import { Users } from '../../users/entities/user.entity';
+import { UsersBaseEntity } from 'src/common-modules/entities/user-base.entity';
+import { Roles } from 'src/modules/roles/entities/role.entity';
+import { Entity, ManyToOne } from 'typeorm';
 
-export class Admin extends Users {}
+@Entity()
+export class Admins extends UsersBaseEntity {
+  @ManyToOne(() => Roles, (role) => role.id, { nullable: false })
+  role: Roles;
+}
