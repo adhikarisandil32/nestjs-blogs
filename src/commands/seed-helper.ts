@@ -58,6 +58,14 @@ export async function seedUsers(
 ) {
   const UserSeedingContext = 'users-seed';
 
+  const existingUsers = await queryRunner.manager.find(Users);
+
+  if (existingUsers && existingUsers.length >= 5) {
+    loggerService.log('seeding users', UserSeedingContext);
+    loggerService.log('users seed complete', UserSeedingContext);
+    return;
+  }
+
   const existingRoles = await queryRunner.manager.find(Roles);
   if (!existingRoles || (existingRoles && existingRoles.length <= 0)) {
     throw new Error('roles not available. seed roles first');
@@ -105,6 +113,7 @@ export async function seedAdmin(
   );
 
   if (myAdminUser) {
+    loggerService.log('admin seed start', AdminSeedingContext);
     loggerService.log('admin seed succcess', AdminSeedingContext);
     return;
   }
@@ -118,6 +127,7 @@ export async function seedAdmin(
     (existingRole) => existingRole.role === UserRole.ADMIN,
   );
 
+  loggerService.log('admin seed start', AdminSeedingContext);
   const admin = queryRunner.manager.create(Admins, {
     name: 'Admin',
     email: 'admin@gmail.com',
