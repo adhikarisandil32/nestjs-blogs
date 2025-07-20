@@ -4,6 +4,7 @@ import { QueryRunner } from 'typeorm';
 import { MyLogger } from 'src/common-modules/logger.service';
 import { faker } from '@faker-js/faker';
 import { Users } from 'src/modules/users/entities/user.entity';
+import { Admins } from 'src/modules/admins/entities/admin.entity';
 
 /****************
  * Roles Seeder *
@@ -57,8 +58,6 @@ export async function seedUsers(
 ) {
   const UserSeedingContext = 'users-seed';
 
-  loggerService.log('seeding users', UserSeedingContext);
-
   const existingRoles = await queryRunner.manager.find(Roles);
   if (!existingRoles || (existingRoles && existingRoles.length <= 0)) {
     throw new Error('roles not available. seed roles first');
@@ -67,6 +66,8 @@ export async function seedUsers(
   const userRole = existingRoles.find(
     (existingRole) => existingRole.role === UserRole.USER,
   );
+
+  loggerService.log('seeding users', UserSeedingContext);
 
   for (let i = 1; i <= 20; i++) {
     const user = queryRunner.manager.create(Users, {
@@ -82,5 +83,48 @@ export async function seedUsers(
 
   loggerService.log('users seed complete', UserSeedingContext);
 
+  return;
+}
+
+/****************
+ * Admin Seeder *
+ ****************/
+
+export async function seedAdmin(
+  queryRunner: QueryRunner,
+  loggerService: MyLogger,
+) {
+  const AdminSeedingContext = 'seed-admin';
+
+  const existingAdmins = await queryRunner.manager.find(Admins);
+
+  const myAdminUser = existingAdmins.find(
+    (existingAdmin) =>
+      existingAdmin.email.toLowerCase() === 'admin@gmail.com' &&
+      existingAdmin.role.role === UserRole.ADMIN,
+  );
+
+  if (myAdminUser) {
+    loggerService.log('admin seed succcess', AdminSeedingContext);
+    return;
+  }
+
+  const existingRoles = await queryRunner.manager.find(Roles);
+  if (!existingRoles || (existingRoles && existingRoles.length <= 0)) {
+    throw new Error('roles not available. seed roles first');
+  }
+
+  const adminRole = existingRoles.find(
+    (existingRole) => existingRole.role === UserRole.ADMIN,
+  );
+
+  const admin = queryRunner.manager.create(Admins, {
+    name: 'Admin',
+    email: 'admin@gmail.com',
+    password: 'Test@123',
+    role: adminRole,
+  });
+  await queryRunner.manager.save(admin);
+  loggerService.log('admin seed succcess', AdminSeedingContext);
   return;
 }

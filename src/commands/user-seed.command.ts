@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { seedUserRoles, seedUsers } from './seed-helper';
+import { seedAdmin, seedUserRoles, seedUsers } from './seed-helper';
 import { MyLogger } from 'src/common-modules/logger.service';
 
 @Injectable()
@@ -24,6 +24,7 @@ export class SeedUsersDatabase {
     try {
       await seedUserRoles(queryRunner, this._loggerService);
       await seedUsers(queryRunner, this._loggerService);
+      await seedAdmin(queryRunner, this._loggerService);
     } catch (error) {
       this._loggerService.error(
         error?.message,
