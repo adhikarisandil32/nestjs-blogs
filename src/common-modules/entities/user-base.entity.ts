@@ -2,7 +2,6 @@ import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
 import { BeforeInsert, Column, Entity } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
-@Entity()
 export class UsersBaseEntity extends DBBaseEntity {
   @Column({ nullable: false })
   name: string;
