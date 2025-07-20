@@ -1,7 +1,10 @@
 import { NestApplication } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AdminRouterModule } from './router/routes/admin.route.module';
-import { PublicRouterModule } from './router/routes/public.route.module';
+import { AdminsModule } from './modules/admins/admins.module';
+import { UsersModule } from './modules/users/users.module';
+import { TodosModule } from './modules/todos/todos.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ControllerPrefix } from './constants/controller-prefix.constant';
 
 export async function swaggerInit(app: NestApplication) {
   /* Admin Router Document Build and setup*/
@@ -19,9 +22,15 @@ export async function swaggerInit(app: NestApplication) {
     adminRouterDocumentBuild,
     {
       deepScanRoutes: true,
-      include: [AdminRouterModule],
+      include: [AuthModule, AdminsModule, UsersModule, TodosModule],
     },
   );
+  adminRouterDocument.paths = Object.keys(adminRouterDocument.paths)
+    .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.ADMIN}`))
+    .reduce((acc, path) => {
+      acc[path] = adminRouterDocument.paths[path];
+      return acc;
+    }, {});
 
   SwaggerModule.setup('api-docs/admin', app, adminRouterDocument, {
     customSiteTitle: 'Blogging App Backend',
@@ -57,10 +66,15 @@ export async function swaggerInit(app: NestApplication) {
     app,
     publicRouterDocumentBuild,
     {
-      deepScanRoutes: true,
-      include: [PublicRouterModule],
+      include: [AuthModule, TodosModule],
     },
   );
+  publicRouterDocument.paths = Object.keys(publicRouterDocument.paths)
+    .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.PUBLIC}`))
+    .reduce((acc, path) => {
+      acc[path] = publicRouterDocument.paths[path];
+      return acc;
+    }, {});
 
   SwaggerModule.setup('api-docs/public', app, publicRouterDocument, {
     customSiteTitle: 'Blogging App Backend',
