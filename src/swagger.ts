@@ -4,7 +4,6 @@ import { AdminsModule } from './modules/admins/admins.module';
 import { UsersModule } from './modules/users/users.module';
 import { TodosModule } from './modules/todos/todos.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { ControllerPrefix } from './constants/controller-prefix.constant';
 
 export async function swaggerInit(app: NestApplication) {
   /* Admin Router Document Build and setup*/
@@ -21,19 +20,12 @@ export async function swaggerInit(app: NestApplication) {
     app,
     adminRouterDocumentBuild,
     {
-      deepScanRoutes: true,
       include: [AuthModule, AdminsModule, UsersModule, TodosModule],
     },
   );
-  adminRouterDocument.paths = Object.keys(adminRouterDocument.paths)
-    .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.ADMIN}`))
-    .reduce((acc, path) => {
-      acc[path] = adminRouterDocument.paths[path];
-      return acc;
-    }, {});
 
   SwaggerModule.setup('api-docs/admin', app, adminRouterDocument, {
-    customSiteTitle: 'Blogging App Backend',
+    customSiteTitle: 'Blogging App Backend - Admin',
     swaggerOptions: {
       tagsSorter: (a: string, b: string) => {
         if (a === 'Auth') return -100;
@@ -69,15 +61,15 @@ export async function swaggerInit(app: NestApplication) {
       include: [AuthModule, TodosModule],
     },
   );
-  publicRouterDocument.paths = Object.keys(publicRouterDocument.paths)
-    .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.PUBLIC}`))
-    .reduce((acc, path) => {
-      acc[path] = publicRouterDocument.paths[path];
-      return acc;
-    }, {});
+  // publicRouterDocument.paths = Object.keys(publicRouterDocument.paths)
+  // .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.PUBLIC}`))
+  // .reduce((acc, path) => {
+  //   acc[path] = publicRouterDocument.paths[path];
+  //   return acc;
+  // }, {});
 
   SwaggerModule.setup('api-docs/public', app, publicRouterDocument, {
-    customSiteTitle: 'Blogging App Backend',
+    customSiteTitle: 'Blogging App Backend - Public',
     swaggerOptions: {
       tagsSorter: (a: string, b: string) => {
         if (a === 'Auth') return -100;
