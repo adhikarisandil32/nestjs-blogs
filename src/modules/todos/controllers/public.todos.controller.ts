@@ -19,12 +19,12 @@ import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
 import { TodosService } from '../todos.service';
 import { Request as IRequest } from 'express';
-import { AuthGuard } from '../../auth/decorator/auth-guard.decorator';
 import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
 import { ControllerPrefix } from 'src/constants/controller-prefix.constant';
+import { AuthGuard } from 'src/modules/auth/decorator/auth-guard.decorator';
 
 @ApiTags('Todos')
 @Controller(`${ControllerPrefix.PUBLIC}/todos`)
