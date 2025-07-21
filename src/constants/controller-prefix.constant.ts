@@ -1,4 +1,6 @@
+export const API_PREFIX = 'api';
+
 export enum ControllerPrefix {
   ADMIN = 'admin',
-  PUBLIC = 'public-users',
+  PUBLIC = 'public-user',
 }
