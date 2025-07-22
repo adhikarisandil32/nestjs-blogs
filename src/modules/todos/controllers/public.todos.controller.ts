@@ -9,19 +9,26 @@ import {
   Query,
   Request,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { CreateTodosDto } from './dto/create-todos.dto';
-import { UpdateTodosDto } from './dto/update-todos.dto';
-import { TodosService } from './todos.service';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CreateTodosDto } from '../dto/create-todos.dto';
+import { UpdateTodosDto } from '../dto/update-todos.dto';
+import { TodosService } from '../todos.service';
+import { Request as IRequest } from 'express';
 import {
   ResponseMessage,
   ShowPagination,
-} from '../../common-modules/response/decorators/response.decorator';
-import { Request as IRequest } from 'express';
-import { AuthGuard } from '../auth/decorator/auth-guard.decorator';
+} from 'src/common-modules/response/decorators/response.decorator';
+import { AuthGuard } from 'src/modules/auth/decorator/auth-guard.decorator';
 
+@ApiTags('Todos')
+// @Controller(`${ControllerPrefix.PUBLIC}/todos`)
 @Controller('todos')
-export class TodosController {
+export class TodosControllerPublic {
   constructor(private readonly todosService: TodosService) {}
 
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto

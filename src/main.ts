@@ -1,35 +1,20 @@
-import { NestFactory } from '@nestjs/core';
+import { NestApplication, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { TodosModule } from './modules/todos/todos.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { swaggerInit } from './swagger-nest-router';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestApplication>(AppModule);
 
-  const swaggerDocumentBuild = new DocumentBuilder()
-    .setTitle('Todos API Documentation')
-    .setDescription('This is the API documentation for the todo app.')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const todosDocument = () =>
-    SwaggerModule.createDocument(app, swaggerDocumentBuild, {
-      // for excluding modules and routes
-      include: [TodosModule, AuthModule],
-    });
-  SwaggerModule.setup('api-docs', app, todosDocument, {
-    customSiteTitle: 'Blogging App Backend',
-    swaggerOptions: {
-      tagsSorter: 'alpha', // sort by alphabet
-      docExpansion: false,
-      persistAuthorization: true, // to persist authorization on browser reload
-    },
-    // Visit https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/ for more swagger options
-  });
+  // set global prefix before swagger initialization
+  // not necessary if nest router is utilized
+  // if (API_PREFIX) {
+  //   app.setGlobalPrefix(API_PREFIX);
+  // }
 
-  app.setGlobalPrefix('api');
+  /* Swagger Setup moved to swagger.ts file */
+  await swaggerInit(app);
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   await app.listen(process.env.PORT ?? 3000);

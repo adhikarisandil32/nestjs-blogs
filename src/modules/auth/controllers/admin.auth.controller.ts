@@ -5,15 +5,17 @@ import {
   Get,
   Request as NestRequest,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { authDto } from './dto/auth.dto';
+import { AuthService } from '../auth.service';
+import { authDto } from '../dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
-import { AuthGuard } from './decorator/auth-guard.decorator';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '../decorator/auth-guard.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
+@ApiTags('Authentication')
+// @Controller(`${ControllerPrefix.ADMIN}/auth`)
 @Controller('auth')
-export class AuthController {
+export class AuthControllerAdmin {
   constructor(private readonly authService: AuthService) {}
 
   @ResponseMessage('Login Success')
