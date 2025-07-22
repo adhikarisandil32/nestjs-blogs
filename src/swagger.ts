@@ -1,9 +1,17 @@
+/* This swagger setup is for using showing seperate controller for seperate swagger page but the controllers stay in the same module without using the NestRouter */
+// This is hackey way
+// see swagger-nest-router.ts file for swagger setup using nestjs router
+
 import { NestApplication } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AdminsModule } from './modules/admins/admins.module';
 import { UsersModule } from './modules/users/users.module';
 import { TodosModule } from './modules/todos/todos.module';
 import { AuthModule } from './modules/auth/auth.module';
+import {
+  ADMIN_API_PATH,
+  PUBLIC_API_PATH,
+} from './constants/controller-prefix.constant';
 
 export async function swaggerInit(app: NestApplication) {
   /* Admin Router Document Build and setup*/
@@ -24,12 +32,19 @@ export async function swaggerInit(app: NestApplication) {
     },
   );
 
+  adminRouterDocument.paths = Object.keys(adminRouterDocument.paths)
+    .filter((eachPath) => eachPath.startsWith(ADMIN_API_PATH))
+    .reduce((acc, path) => {
+      acc[path] = adminRouterDocument.paths[path];
+      return acc;
+    }, {});
+
   SwaggerModule.setup('api-docs/admin', app, adminRouterDocument, {
     customSiteTitle: 'Blogging App Backend - Admin',
     swaggerOptions: {
       tagsSorter: (a: string, b: string) => {
-        if (a === 'Auth') return -100;
-        if (b === 'Auth') return 100;
+        if (a === 'Authentication') return -100;
+        if (b === 'Authentication') return 100;
         // if Auth tag, always keep if a top priority
         // tags are the names provided in swagger, you can manually provide them using @ApiTags('<tag_name>') on controller
         // here a and b are tag names
@@ -61,19 +76,19 @@ export async function swaggerInit(app: NestApplication) {
       include: [AuthModule, TodosModule],
     },
   );
-  // publicRouterDocument.paths = Object.keys(publicRouterDocument.paths)
-  // .filter((eachPath) => eachPath.startsWith(`/${ControllerPrefix.PUBLIC}`))
-  // .reduce((acc, path) => {
-  //   acc[path] = publicRouterDocument.paths[path];
-  //   return acc;
-  // }, {});
+  publicRouterDocument.paths = Object.keys(publicRouterDocument.paths)
+    .filter((eachPath) => eachPath.startsWith(PUBLIC_API_PATH))
+    .reduce((acc, path) => {
+      acc[path] = publicRouterDocument.paths[path];
+      return acc;
+    }, {});
 
   SwaggerModule.setup('api-docs/public', app, publicRouterDocument, {
     customSiteTitle: 'Blogging App Backend - Public',
     swaggerOptions: {
       tagsSorter: (a: string, b: string) => {
-        if (a === 'Auth') return -100;
-        if (b === 'Auth') return 100;
+        if (a === 'Authentication') return -100;
+        if (b === 'Authentication') return 100;
 
         return a > b ? 1 : -1;
       },
