@@ -23,11 +23,11 @@ import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
-import { ControllerPrefix } from 'src/constants/controller-prefix.constant';
 import { AuthGuard } from 'src/modules/auth/decorator/auth-guard.decorator';
 
 @ApiTags('Todos')
-@Controller(`${ControllerPrefix.PUBLIC}/todos`)
+// @Controller(`${ControllerPrefix.PUBLIC}/todos`)
+@Controller('todos')
 export class TodosControllerPublic {
   constructor(private readonly todosService: TodosService) {}
 

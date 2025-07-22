@@ -10,12 +10,11 @@ import {
 import { AdminsService } from '../admins.service';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { UpdateAdminDto } from '../dto/update-admin.dto';
-import { ApiExcludeController, ApiTags } from '@nestjs/swagger';
-import { ControllerPrefix } from 'src/constants/controller-prefix.constant';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Admins')
-@ApiExcludeController()
-@Controller(`${ControllerPrefix.ADMIN}/admins`)
+// @Controller(`${ControllerPrefix.ADMIN}/admins`)
+@Controller('admins')
 export class AdminsController {
   constructor(private readonly adminsService: AdminsService) {}
 

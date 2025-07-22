@@ -11,10 +11,10 @@ import { RolesService } from '../roles.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { ControllerPrefix } from 'src/constants/controller-prefix.constant';
 
 @ApiTags('Roles')
-@Controller(`${ControllerPrefix.ADMIN}/roles`)
+// @Controller(`${ControllerPrefix.ADMIN}/roles`)
+@Controller('roles')
 export class RolesControllerAdmin {
   constructor(private readonly rolesService: RolesService) {}
 

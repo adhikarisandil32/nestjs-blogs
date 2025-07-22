@@ -11,10 +11,10 @@ import { ResponseMessage } from 'src/common-modules/response/decorators/response
 import { AuthGuard } from '../decorator/auth-guard.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ControllerPrefix } from 'src/constants/controller-prefix.constant';
 
-@ApiTags('Auth')
-@Controller(`${ControllerPrefix.ADMIN}/auth`)
+@ApiTags('Authentication')
+// @Controller(`${ControllerPrefix.ADMIN}/auth`)
+@Controller('auth')
 export class AuthControllerAdmin {
   constructor(private readonly authService: AuthService) {}
 
