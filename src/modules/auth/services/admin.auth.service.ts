@@ -8,8 +8,8 @@ import { authDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Users } from 'src/modules/users/entities/user.entity';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
+import { Roles } from 'src/modules/roles/entities/role.entity';
 
 @Injectable()
 export class AuthServiceAdmin {
@@ -24,14 +24,28 @@ export class AuthServiceAdmin {
         email: authDto.email,
       },
       select: {
-        id: true,
-        email: true,
         role: {
           id: true,
           role: true,
         },
       },
+      relations: {
+        role: true,
+      },
     });
+
+    // const existingUser = await this._dataSource.manager
+    //   .createQueryBuilder(Admins, 'admin')
+    //   .leftJoinAndSelect('admin.role', 'roles')
+    //   .select([
+    //     'admin.id',
+    //     'admin.name',
+    //     'admin.email',
+    //     'roles.id',
+    //     'roles.role',
+    //   ])
+    //   .where('admin.email = :email', { email: authDto.email })
+    //   .getOne();
 
     if (!existingUser) throw new NotFoundException("User Doesn't Exist");
 
