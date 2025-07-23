@@ -72,7 +72,7 @@ export class AuthServiceAdmin {
     return { ...otherData, accessToken };
   }
 
-  findMe(request: Request): { data: Admins } {
+  findMe(request: Request): Admins {
     return request?.['user'];
   }
 }
