@@ -36,6 +36,9 @@ export class AdminsServiceAdmin {
           role: true,
         },
       },
+      relations: {
+        role: true,
+      },
     });
   }
 

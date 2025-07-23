@@ -58,6 +58,9 @@ export class UsersServicePublic {
           role: true,
         },
       },
+      relations: {
+        role: true,
+      },
     });
 
     return user;
