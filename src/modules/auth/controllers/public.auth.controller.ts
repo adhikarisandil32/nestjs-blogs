@@ -9,7 +9,7 @@ import { authDto } from '../dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
-import { PutAdmin } from '../decorator/put-user.decorator';
+import { PutPublicUser } from '../decorator/put-user.decorator';
 import { AuthServicePublic } from '../services/public.auth.service';
 
 @ApiTags('Authentication')
@@ -26,7 +26,7 @@ export class AuthControllerPublic {
 
   @ResponseMessage('logged in user detail fetch success')
   @ApiBearerAuth()
-  @PutAdmin()
+  @PutPublicUser()
   @Get('me')
   me(@NestRequest() request: Request) {
     return this.authService.findMe(request);
