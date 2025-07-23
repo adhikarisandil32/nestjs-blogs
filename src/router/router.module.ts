@@ -13,7 +13,7 @@ import { PublicRouteModules } from './routes/public.routes.module';
         module: AdminRouteModules,
       },
       {
-        path: 'api/public',
+        path: 'api/public-user',
         module: PublicRouteModules,
       },
     ]),
