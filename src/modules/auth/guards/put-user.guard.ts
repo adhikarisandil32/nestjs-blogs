@@ -68,7 +68,7 @@ export class PublicUserGuard implements CanActivate {
 export class AdminGuard implements CanActivate {
   constructor(
     private readonly _jwtService: JwtService,
-    // private readonly _adminService: AdminsServiceAdmin,
+    private readonly _adminService: AdminsServiceAdmin,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -97,14 +97,14 @@ export class AdminGuard implements CanActivate {
       secret: process.env.JWT_SECRET,
     });
 
-    // const admin = await this._adminService.findOne(decodedData.id);
+    const admin = await this._adminService.findOne(decodedData.id);
 
-    // if (!admin) throw new NotFoundException('request user not available');
+    if (!admin) throw new NotFoundException('request user not available');
 
-    // if (admin.role.role !== UserRole.ADMIN)
-    //   throw new UnauthorizedException('unauthorized access');
+    if (admin.role.role !== UserRole.ADMIN)
+      throw new UnauthorizedException('unauthorized access');
 
-    // request['user'] = admin;
+    request['user'] = admin;
 
     return;
   }
