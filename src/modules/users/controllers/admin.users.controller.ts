@@ -8,15 +8,15 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UsersService } from '../users.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UsersServiceAdmin } from '../services/admin.users.service';
 
 @ApiTags('Users')
 // @Controller(`${ControllerPrefix.ADMIN}/users`)
 @Controller('users')
 export class UsersControllerAdmin {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersServiceAdmin) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {

@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
-import { AuthControllerPublic } from './controllers/public.auth.controller';
-import { AuthControllerAdmin } from './controllers/admin.auth.controller';
+import { AdminsModule } from '../admins/admins.module';
+import { AuthServiceAdmin } from './services/admin.auth.service';
+import { AuthServicePublic } from './services/public.auth.service';
 
 @Module({
   imports: [
+    AdminsModule,
     UsersModule,
     JwtModule.register({
       global: true,
     }),
   ],
-  controllers: [AuthControllerAdmin, AuthControllerPublic],
-  providers: [AuthService, JwtService],
-  exports: [AuthService],
+  providers: [AuthServiceAdmin, AuthServicePublic, JwtService],
+  exports: [AuthServiceAdmin, AuthServicePublic],
 })
 export class AuthModule {}

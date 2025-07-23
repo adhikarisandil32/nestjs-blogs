@@ -4,7 +4,7 @@ import { AdminsModule } from 'src/modules/admins/admins.module';
 import { AdminsController } from 'src/modules/admins/controller/admin.admins.controller';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { AuthControllerAdmin } from 'src/modules/auth/controllers/admin.auth.controller';
-import { RolesControllerAdmin } from 'src/modules/roles/controllers/admin.roles.controller';
+import { RolesController } from 'src/modules/roles/controllers/admin.roles.controller';
 import { RolesModule } from 'src/modules/roles/roles.module';
 import { TodosControllerAdmin } from 'src/modules/todos/controllers/admin.todos.controller';
 import { TodosModule } from 'src/modules/todos/todos.module';
@@ -17,7 +17,7 @@ import { UsersModule } from 'src/modules/users/users.module';
     AuthControllerAdmin,
     AdminsController,
     TodosControllerAdmin,
-    RolesControllerAdmin,
+    RolesController,
     UsersControllerAdmin,
   ],
 })

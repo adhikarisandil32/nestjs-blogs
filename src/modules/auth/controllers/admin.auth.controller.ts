@@ -5,18 +5,18 @@ import {
   Get,
   Request as NestRequest,
 } from '@nestjs/common';
-import { AuthService } from '../auth.service';
 import { authDto } from '../dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
-import { AuthGuard } from '../decorator/auth-guard.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
+import { PutAdmin } from '../decorator/put-user.decorator';
+import { AuthServiceAdmin } from '../services/admin.auth.service';
 
 @ApiTags('Authentication')
 // @Controller(`${ControllerPrefix.ADMIN}/auth`)
 @Controller('auth')
 export class AuthControllerAdmin {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthServiceAdmin) {}
 
   @ResponseMessage('Login Success')
   @Post('login')
@@ -25,7 +25,7 @@ export class AuthControllerAdmin {
   }
 
   @ResponseMessage('logged in user detail fetch success')
-  @AuthGuard()
+  @PutAdmin()
   @ApiBearerAuth()
   @Get('me')
   me(@NestRequest() request: Request) {

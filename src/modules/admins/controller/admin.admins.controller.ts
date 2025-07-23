@@ -7,16 +7,16 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { AdminsService } from '../admins.service';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { UpdateAdminDto } from '../dto/update-admin.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AdminsServiceAdmin } from '../services/admin.admins.service';
 
 @ApiTags('Admins')
 // @Controller(`${ControllerPrefix.ADMIN}/admins`)
 @Controller('admins')
 export class AdminsController {
-  constructor(private readonly adminsService: AdminsService) {}
+  constructor(private readonly adminsService: AdminsServiceAdmin) {}
 
   @Post()
   create(@Body() createAdminDto: CreateAdminDto) {

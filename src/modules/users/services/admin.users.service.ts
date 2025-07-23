@@ -1,0 +1,74 @@
+import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from '../entities/user.entity';
+
+@Injectable()
+export class UsersServiceAdmin {
+  constructor(
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    try {
+      await this.usersRepository.insert(createUserDto);
+
+      return {
+        message: 'User Creation success',
+        status: 200,
+        success: true,
+        data: createUserDto,
+      };
+    } catch (error) {
+      return {
+        message: error.message,
+        success: false,
+        data: null,
+      };
+    }
+  }
+
+  async findAll() {
+    const users = await this.usersRepository.find({
+      select: {
+        createdAt: true,
+        deletedAt: true,
+        updatedAt: true,
+        email: true,
+        id: true,
+        name: true,
+      },
+    });
+
+    return users;
+  }
+
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+      select: {
+        createdAt: true,
+        deletedAt: true,
+        updatedAt: true,
+        email: true,
+        id: true,
+        name: true,
+      },
+    });
+
+    return user;
+  }
+
+  update(id: number, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${id} user`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} user`;
+  }
+}

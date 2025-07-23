@@ -1,34 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from './entities/user.entity';
+import { Users } from '../entities/user.entity';
 
 @Injectable()
-export class UsersService {
+export class UsersServicePublic {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      await this.usersRepository.insert(createUserDto);
+    const user = this.usersRepository.create(createUserDto);
 
-      return {
-        message: 'User Creation success',
-        status: 200,
-        success: true,
-        data: createUserDto,
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        success: false,
-        data: null,
-      };
-    }
+    await this.usersRepository.save(user);
+
+    const { password, ...others } = user;
+
+    return others;
   }
 
   async findAll() {
@@ -36,10 +27,14 @@ export class UsersService {
       select: {
         createdAt: true,
         deletedAt: true,
-        updatedAt: true,
         email: true,
         id: true,
         name: true,
+        updatedAt: true,
+        role: {
+          id: true,
+          role: true,
+        },
       },
     });
 
@@ -54,10 +49,14 @@ export class UsersService {
       select: {
         createdAt: true,
         deletedAt: true,
-        updatedAt: true,
         email: true,
         id: true,
         name: true,
+        updatedAt: true,
+        role: {
+          id: true,
+          role: true,
+        },
       },
     });
 
@@ -68,7 +67,7 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove() {
+    return `This action removes me`;
   }
 }
