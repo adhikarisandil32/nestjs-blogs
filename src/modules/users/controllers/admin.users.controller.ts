@@ -18,7 +18,7 @@ import { UsersServiceAdmin } from '../services/admin.users.service';
 export class UsersControllerAdmin {
   constructor(private readonly usersService: UsersServiceAdmin) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

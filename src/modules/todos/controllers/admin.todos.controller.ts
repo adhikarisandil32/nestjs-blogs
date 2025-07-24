@@ -34,7 +34,7 @@ export class TodosControllerAdmin {
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiBearerAuth()
-  @Post()
+  @Post('create')
   @PutAdmin()
   @ResponseMessage('Todo create success')
   // below pipe will only validate and put it into body whose dtos are created is validated
