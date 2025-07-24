@@ -3,13 +3,13 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from 'src/constants/user-roles.constant';
-import { UsersServicePublic } from 'src/modules/users/services/public.users.service';
-import { AdminsServiceAdmin } from 'src/modules/admins/services/admin.admins.service';
+import { DataSource } from 'typeorm';
+import { Admins } from 'src/modules/admins/entities/admin.entity';
+import { Users } from 'src/modules/users/entities/user.entity';
 
 export interface IJwtPayload {
   id: number;
@@ -22,7 +22,7 @@ export interface IJwtPayload {
 export class PublicUserGuard implements CanActivate {
   constructor(
     private readonly _jwtService: JwtService,
-    private readonly _usersService: UsersServicePublic,
+    private readonly _dataSource: DataSource,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -51,12 +51,28 @@ export class PublicUserGuard implements CanActivate {
       secret: process.env.JWT_SECRET,
     });
 
-    const user = await this._usersService.findOne(decodedData.id);
+    const user = await this._dataSource.manager.findOne(Users, {
+      where: {
+        id: decodedData.id,
+        email: decodedData.email,
+      },
+      select: {
+        role: {
+          id: true,
+          role: true,
+        },
+      },
+      relations: {
+        role: true,
+      },
+    });
 
-    if (!user) throw new NotFoundException('request user not available');
+    if (!user) throw new UnauthorizedException('unauthorized access');
 
     if (user.role.role !== UserRole.USER)
       throw new UnauthorizedException('unauthorized access');
+
+    delete user.password;
 
     request['user'] = user;
 
@@ -68,7 +84,7 @@ export class PublicUserGuard implements CanActivate {
 export class AdminGuard implements CanActivate {
   constructor(
     private readonly _jwtService: JwtService,
-    private readonly _adminService: AdminsServiceAdmin,
+    private readonly _dataSource: DataSource,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -97,12 +113,28 @@ export class AdminGuard implements CanActivate {
       secret: process.env.JWT_SECRET,
     });
 
-    const admin = await this._adminService.findOne(decodedData.id);
+    const admin = await this._dataSource.manager.findOne(Admins, {
+      where: {
+        id: decodedData.id,
+        email: decodedData.email,
+      },
+      select: {
+        role: {
+          id: true,
+          role: true,
+        },
+      },
+      relations: {
+        role: true,
+      },
+    });
 
-    if (!admin) throw new NotFoundException('request user not available');
+    if (!admin) throw new UnauthorizedException('unauthorized access');
 
     if (admin.role.role !== UserRole.ADMIN)
       throw new UnauthorizedException('unauthorized access');
+
+    delete admin.password;
 
     request['user'] = admin;
 
