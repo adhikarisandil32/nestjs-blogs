@@ -6,12 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CreateAdminDto } from '../dto/create-admin.dto';
 import { UpdateAdminDto } from '../dto/update-admin.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AdminsServiceAdmin } from '../services/admin.admins.service';
 import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
+import {
+  ResponseMessage,
+  ShowPagination,
+} from 'src/common-modules/response/decorators/response.decorator';
+import { PaginateQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 
 @ApiTags('Admins')
 // @Controller(`${ControllerPrefix.ADMIN}/admins`)
@@ -26,11 +32,14 @@ export class AdminsController {
     return this.adminsService.create(createAdminDto);
   }
 
-  @Get()
-  @PutAdmin()
   @ApiBearerAuth()
-  findAll() {
-    return this.adminsService.findAll();
+  @PutAdmin()
+  @ResponseMessage('admins fetch success')
+  @ShowPagination()
+  @Get()
+  findAll(@Query() queryParams: PaginateQueryDto) {
+    // console.log(queryParams);
+    return this.adminsService.findAll(queryParams);
   }
 
   @Get(':id')
