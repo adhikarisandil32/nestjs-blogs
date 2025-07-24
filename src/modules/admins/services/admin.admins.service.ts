@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Roles } from 'src/modules/roles/entities/role.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Users } from 'src/modules/users/entities/user.entity';
+import { PaginateQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 
 @Injectable()
 export class AdminsServiceAdmin {
@@ -44,8 +45,28 @@ export class AdminsServiceAdmin {
     return admin;
   }
 
-  async findAll() {
-    return await this.adminsRepository.find({
+  async findAll(queryParams: PaginateQueryDto) {
+    const sorting = {};
+    const validSortKeys: (keyof Admins)[] = [
+      'id',
+      'createdAt',
+      'deletedAt',
+      'email',
+    ];
+
+    if (queryParams.sort) {
+      const [sortTitle, sortValue] = queryParams.sort.split('.');
+
+      if (validSortKeys.includes(sortTitle as keyof Admins))
+        sorting[sortTitle] = sortValue.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    }
+
+    const currentPage =
+      +(queryParams.page ?? 1) > 1 ? +(queryParams.page ?? 1) : 1;
+    const limit = +(queryParams.limit ?? 10);
+    const offset = (currentPage - 1) * limit;
+
+    const [admins, adminsCount] = await this.adminsRepository.findAndCount({
       select: {
         id: true,
         createdAt: true,
@@ -58,10 +79,15 @@ export class AdminsServiceAdmin {
           role: true,
         },
       },
+      order: { ...sorting },
+      take: limit,
+      skip: offset,
       relations: {
         role: true,
       },
     });
+
+    return { data: admins, count: adminsCount };
   }
 
   async findOne(id: number) {
