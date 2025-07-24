@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { authDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
@@ -22,9 +18,19 @@ export class AuthServicePublic {
       where: {
         email: authDto.email,
       },
+      select: {
+        role: {
+          id: true,
+          role: true,
+        },
+      },
+      relations: {
+        role: true,
+      },
     });
 
-    if (!existingUser) throw new NotFoundException("User Doesn't Exist");
+    if (!existingUser)
+      throw new UnauthorizedException("email or password does't match");
 
     const isPasswordVerified = await bcrypt.compare(
       authDto.password,
@@ -34,7 +40,8 @@ export class AuthServicePublic {
     if (!isPasswordVerified)
       throw new UnauthorizedException("email or password does't match");
 
-    const { password, ...otherData } = existingUser;
+    delete existingUser.password;
+
     const accessToken = this.jwtService.sign(
       {
         id: existingUser.id,
@@ -45,7 +52,7 @@ export class AuthServicePublic {
       { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
     );
 
-    return { ...otherData, accessToken };
+    return { user: existingUser, accessToken };
   }
 
   findMe(request: Request): { data: Users } {

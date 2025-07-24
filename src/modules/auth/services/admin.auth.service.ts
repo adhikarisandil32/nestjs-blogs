@@ -1,15 +1,10 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { authDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
-import { Roles } from 'src/modules/roles/entities/role.entity';
 
 @Injectable()
 export class AuthServiceAdmin {
@@ -19,6 +14,19 @@ export class AuthServiceAdmin {
   ) {}
 
   async login(authDto: authDto) {
+    // const existingUser = await this._dataSource.manager
+    //   .createQueryBuilder(Admins, 'admin')
+    //   .leftJoinAndSelect('admin.role', 'roles')
+    //   .select([
+    //     'admin.id',
+    //     'admin.name',
+    //     'admin.email',
+    //     'roles.id',
+    //     'roles.role',
+    //   ])
+    //   .where('admin.email = :email', { email: authDto.email })
+    //   .getOne();
+
     const existingUser = await this._dataSource.manager.findOne(Admins, {
       where: {
         email: authDto.email,
@@ -34,20 +42,8 @@ export class AuthServiceAdmin {
       },
     });
 
-    // const existingUser = await this._dataSource.manager
-    //   .createQueryBuilder(Admins, 'admin')
-    //   .leftJoinAndSelect('admin.role', 'roles')
-    //   .select([
-    //     'admin.id',
-    //     'admin.name',
-    //     'admin.email',
-    //     'roles.id',
-    //     'roles.role',
-    //   ])
-    //   .where('admin.email = :email', { email: authDto.email })
-    //   .getOne();
-
-    if (!existingUser) throw new NotFoundException("User Doesn't Exist");
+    if (!existingUser)
+      throw new UnauthorizedException("email or password does't match");
 
     const isPasswordVerified = await bcrypt.compare(
       authDto.password,
@@ -57,7 +53,7 @@ export class AuthServiceAdmin {
     if (!isPasswordVerified)
       throw new UnauthorizedException("email or password does't match");
 
-    const { password, ...otherData } = existingUser;
+    delete existingUser.password;
 
     const accessToken = this.jwtService.sign(
       {
@@ -69,7 +65,7 @@ export class AuthServiceAdmin {
       { secret: process.env.JWT_SECRET, expiresIn: process.env.JWT_EXPIRES_IN },
     );
 
-    return { ...otherData, accessToken };
+    return { user: existingUser, accessToken };
   }
 
   findMe(request: Request): Admins {
