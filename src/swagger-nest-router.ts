@@ -18,6 +18,7 @@ export async function swaggerInit(app: NestApplication) {
     app,
     adminRouterDocumentBuild,
     {
+      deepScanRoutes: true,
       include: [AdminRouteModules],
     },
   );
@@ -33,6 +34,7 @@ export async function swaggerInit(app: NestApplication) {
       },
       docExpansion: false,
       persistAuthorization: true,
+      filter: true,
     },
   });
 
@@ -50,6 +52,7 @@ export async function swaggerInit(app: NestApplication) {
     app,
     publicRouterDocumentBuild,
     {
+      deepScanRoutes: true,
       include: [PublicRouteModules],
     },
   );
@@ -65,6 +68,7 @@ export async function swaggerInit(app: NestApplication) {
       },
       docExpansion: false,
       persistAuthorization: true,
+      filter: true,
     },
   });
 }

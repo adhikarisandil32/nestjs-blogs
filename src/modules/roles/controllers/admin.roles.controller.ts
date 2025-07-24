@@ -15,10 +15,10 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Roles')
 // @Controller(`${ControllerPrefix.ADMIN}/roles`)
 @Controller('roles')
-export class RolesControllerAdmin {
+export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.rolesService.create(createRoleDto);
   }

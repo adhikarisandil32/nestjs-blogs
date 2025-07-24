@@ -17,13 +17,13 @@ import {
 } from '@nestjs/swagger';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
-import { TodosService } from '../todos.service';
 import { Request as IRequest } from 'express';
 import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
-import { AuthGuard } from 'src/modules/auth/decorator/auth-guard.decorator';
+import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
+import { TodosService } from '../services/todos.service';
 
 @ApiTags('Todos')
 // @Controller(`${ControllerPrefix.ADMIN}/todos`)
@@ -34,8 +34,8 @@ export class TodosControllerAdmin {
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiBearerAuth()
-  @Post()
-  @AuthGuard()
+  @Post('create')
+  @PutAdmin()
   @ResponseMessage('Todo create success')
   // below pipe will only validate and put it into body whose dtos are created is validated
   // @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -66,7 +66,7 @@ export class TodosControllerAdmin {
   @Get()
   @ResponseMessage('Todos fetch success')
   @ShowPagination()
-  @AuthGuard()
+  @PutAdmin()
   // @SetMetadata('ShowPagination', true)
   findAllPaginated(
     @Request() request: IRequest,
@@ -78,7 +78,7 @@ export class TodosControllerAdmin {
   @ApiOperation({ summary: 'List a todos by id' })
   @ResponseMessage('Todo fetch success')
   @Get(':id')
-  @AuthGuard()
+  @PutAdmin()
   @ApiBearerAuth()
   findOne(@Request() request: IRequest, @Param('id') id: string) {
     return this.todosService.findOne(request, +id);
@@ -87,7 +87,7 @@ export class TodosControllerAdmin {
   @ApiOperation({ summary: 'Update a todo' })
   @ResponseMessage('Update todo success')
   @Patch(':id')
-  @AuthGuard()
+  @PutAdmin()
   @ApiBearerAuth()
   update(
     @Request() request: IRequest,
@@ -101,7 +101,7 @@ export class TodosControllerAdmin {
   // @ApiExcludeEndpoint() // this will hide the endpoint from swagger
   @ResponseMessage('Todo delete success')
   @Delete(':id')
-  @AuthGuard()
+  @PutAdmin()
   @ApiBearerAuth()
   remove(@Request() request: IRequest, @Param('id') id: string) {
     return this.todosService.remove(request, +id);
