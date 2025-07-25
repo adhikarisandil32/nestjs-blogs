@@ -18,7 +18,7 @@ export class ResponseInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      map((dataAndCount) => {
+      map((dataFromService) => {
         const ctx = context.switchToHttp();
         const response: Response = ctx.getResponse();
         const request = ctx.getRequest<Request>();
@@ -29,14 +29,19 @@ export class ResponseInterceptor implements NestInterceptor {
           context.getHandler(),
         );
 
-        const { data, count } = dataAndCount ?? {};
+        let data: any, count: number;
+        if (Array.isArray(dataFromService)) {
+          [data, count] = dataFromService;
+        } else {
+          data = dataFromService;
+        }
 
         if (!showPagination || count == null) {
           return {
             message,
             status: response.statusCode,
             success: response.statusCode < 400,
-            ...(dataAndCount ? { data: dataAndCount } : {}),
+            ...(data ? { data } : {}),
           };
         }
 
