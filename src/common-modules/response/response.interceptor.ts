@@ -38,7 +38,7 @@ export class ResponseInterceptor implements NestInterceptor {
 
         if (!showPagination || count == null) {
           return {
-            message,
+            message: message ?? 'Request Success',
             status: response.statusCode,
             success: response.statusCode < 400,
             ...(data ? { data } : {}),
