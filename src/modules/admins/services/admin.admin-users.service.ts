@@ -55,11 +55,10 @@ export class AdminsServiceAdmin {
       'name',
     ];
 
-    if (queryParams.sort) {
-      const [sortTitle, sortValue] = queryParams.sort.split('.');
+    console.log(queryParams);
 
-      if (validSortKeys.includes(sortTitle as keyof Admins))
-        sorting[sortTitle] = sortValue.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    if (validSortKeys.includes(queryParams.sortField as keyof Admins)) {
+      sorting[queryParams.sortField] = queryParams.sortOrder ?? 'DESC';
     }
 
     const currentPage =
