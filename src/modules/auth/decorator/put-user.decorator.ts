@@ -1,10 +1,11 @@
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import { AdminGuard, PublicUserGuard } from '../guards/put-user.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 export function PutPublicUser() {
-  return applyDecorators(UseGuards(PublicUserGuard));
+  return applyDecorators(ApiBearerAuth(), UseGuards(PublicUserGuard));
 }
 
 export function PutAdmin() {
-  return applyDecorators(UseGuards(AdminGuard));
+  return applyDecorators(ApiBearerAuth(), UseGuards(AdminGuard));
 }
