@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Request as IRequest } from 'express';
 import { Todos } from '../entities/todos.entity';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
+import { Users } from 'src/modules/users/entities/user.entity';
 
 @Injectable()
 export class TodosService {
@@ -13,16 +13,15 @@ export class TodosService {
     private todosRepository: Repository<Todos>,
   ) {}
 
-  async create(
-    request: IRequest,
-    createTodosDto: CreateTodosDto,
-  ): Promise<Todos> {
+  async create(user: Users, createTodosDto: CreateTodosDto): Promise<Todos> {
     const newTodo = this.todosRepository.create({
       // title: createTodosDto.title,
       // isCompleted: createTodosDto.isCompleted,
       // description: createTodosDto.description,
       ...createTodosDto,
-      user: request?.['user']?.id,
+      user: {
+        id: user.id,
+      },
     });
 
     await this.todosRepository.save(newTodo);
@@ -33,7 +32,7 @@ export class TodosService {
   }
 
   async findAllPaginated(
-    request: IRequest,
+    user: Users,
     { searchParams },
   ): Promise<{ data: Todos[]; count: number }> {
     const sorting = {};
@@ -59,7 +58,7 @@ export class TodosService {
     const [data, count] = await this.todosRepository.findAndCount({
       where: {
         user: {
-          id: request?.['user'].id,
+          id: user.id,
         },
       },
       select: { id: true, isCompleted: true, title: true },
@@ -98,15 +97,16 @@ export class TodosService {
   //   return data;
   // }
 
-  async findOne(request: IRequest, id: number): Promise<Todos> {
-    const requestUserId = request?.['user']?.id;
-
+  async findOne(user: Users, id: number): Promise<Todos> {
     const data = await this.todosRepository.findOne({
       where: {
         id,
         user: {
-          id: requestUserId,
+          id: user.id,
         },
+      },
+      relations: {
+        user: true,
       },
     });
 
@@ -118,16 +118,15 @@ export class TodosService {
   }
 
   async update(
-    request: IRequest,
+    user: Users,
     id: number,
     updateTodosDto: UpdateTodosDto,
   ): Promise<Todos> {
-    const requestUserId = request?.['user']?.id;
     const afterUpdate = await this.todosRepository.update(
       {
         id,
         user: {
-          id: requestUserId,
+          id: user.id,
         },
       },
       updateTodosDto,
@@ -146,10 +145,8 @@ export class TodosService {
     return updatedResult;
   }
 
-  async remove(request: IRequest, id: number): Promise<null> {
-    const requestUserId = request?.['user']?.id;
-
-    await this.todosRepository.delete({ id, user: { id: requestUserId } });
+  async remove(user: Users, id: number): Promise<null> {
+    await this.todosRepository.delete({ id, user: { id: user.id } });
 
     return null;
   }

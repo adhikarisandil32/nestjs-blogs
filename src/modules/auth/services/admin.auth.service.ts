@@ -3,7 +3,6 @@ import { DataSource } from 'typeorm';
 import { authDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
 
 @Injectable()
@@ -68,7 +67,7 @@ export class AuthServiceAdmin {
     return { user: existingUser, accessToken };
   }
 
-  findMe(request: Request): Admins {
-    return request?.['user'];
+  findMe(admin: Admins): Admins {
+    return admin;
   }
 }

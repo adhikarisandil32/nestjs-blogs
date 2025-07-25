@@ -1,16 +1,11 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Request as NestRequest,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { authDto } from '../dto/auth.dto';
 import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { PutPublicUser } from '../decorator/put-user.decorator';
 import { AuthServicePublic } from '../services/public.auth.service';
+import { Users } from 'src/modules/users/entities/user.entity';
+import { User } from 'src/common-modules/request/decorators/request.decorator';
 
 @ApiTags('Authentication')
 // @Controller(`${ControllerPrefix.PUBLIC}/auth`)
@@ -28,7 +23,7 @@ export class AuthControllerPublic {
   @ApiBearerAuth()
   @PutPublicUser()
   @Get('me')
-  me(@NestRequest() request: Request) {
-    return this.authService.findMe(request);
+  me(@User() user: Users) {
+    return this.authService.findMe(user);
   }
 }
