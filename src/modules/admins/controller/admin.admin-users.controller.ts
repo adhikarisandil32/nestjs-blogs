@@ -8,10 +8,10 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { CreateAdminDto } from '../dto/create-admin.dto';
-import { UpdateAdminDto } from '../dto/update-admin.dto';
+import { CreateAdminDto } from '../dto/create-admin-user.dto';
+import { UpdateAdminDto } from '../dto/update-admin-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { AdminsServiceAdmin } from '../services/admin.admins.service';
+import { AdminsServiceAdmin } from '../services/admin.admin-users.service';
 import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
 import {
   ResponseMessage,
@@ -21,7 +21,7 @@ import { PaginateQueryDto } from 'src/common-modules/swagger-docs/paginate-query
 
 @ApiTags('Admins')
 // @Controller(`${ControllerPrefix.ADMIN}/admins`)
-@Controller('admins')
+@Controller('admin-users')
 export class AdminsController {
   constructor(private readonly adminsService: AdminsServiceAdmin) {}
 

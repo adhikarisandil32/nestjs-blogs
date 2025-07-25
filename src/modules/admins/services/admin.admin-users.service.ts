@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateAdminDto } from '../dto/create-admin.dto';
-import { UpdateAdminDto } from '../dto/update-admin.dto';
+import { CreateAdminDto } from '../dto/create-admin-user.dto';
+import { UpdateAdminDto } from '../dto/update-admin-user.dto';
 import { DataSource, Repository } from 'typeorm';
 import { Admins } from '../entities/admin.entity';
 import { InjectRepository } from '@nestjs/typeorm';
