@@ -28,7 +28,7 @@ export class UsersControllerPublic {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete('me')
+  @Delete('delete')
   remove() {
     return this.usersService.remove();
   }
