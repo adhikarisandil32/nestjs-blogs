@@ -55,8 +55,6 @@ export class AdminsServiceAdmin {
       'name',
     ];
 
-    console.log(queryParams);
-
     if (validSortKeys.includes(queryParams.sortField as keyof Admins)) {
       sorting[queryParams.sortField] = queryParams.sortOrder ?? 'DESC';
     }
@@ -80,8 +78,12 @@ export class AdminsServiceAdmin {
         deletedAt: true,
       },
       order: { ...sorting },
-      take: limit,
-      skip: offset,
+      ...(queryParams.skipPagination
+        ? {
+            take: limit,
+            skip: offset,
+          }
+        : {}),
       relations: {
         role: true,
       },
