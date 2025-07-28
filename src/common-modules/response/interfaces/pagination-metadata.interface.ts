@@ -5,4 +5,5 @@ export interface IPaginationMetadata {
   totalPage: number;
   nextPage: number | null;
   prevPage: number | null;
+  skipPagination?: boolean;
 }
