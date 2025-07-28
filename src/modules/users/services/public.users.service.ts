@@ -17,23 +17,20 @@ export class UsersServicePublic {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existingUserInUsers = await this.usersRepository.findOne({
-      where: {
-        email: createUserDto.email,
-      },
-    });
-    if (existingUserInUsers)
-      throw new ConflictException('user already exists with this email');
-
-    const existingUsersInAdmins = await this._dataSource.manager.findOne(
-      Admins,
-      {
+    const [existingUserInUsers, existingUserInAdmins] = await Promise.all([
+      this.usersRepository.findOne({
         where: {
           email: createUserDto.email,
         },
-      },
-    );
-    if (existingUsersInAdmins)
+      }),
+      this._dataSource.manager.findOne(Admins, {
+        where: {
+          email: createUserDto.email,
+        },
+      }),
+    ]);
+
+    if (existingUserInUsers || existingUserInAdmins)
       throw new ConflictException('user already exists with this email');
 
     const preparedData = await this.prepareUserCreateData(createUserDto);
