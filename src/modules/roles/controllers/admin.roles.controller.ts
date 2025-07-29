@@ -11,9 +11,11 @@ import { RolesService } from '../roles.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { ApiTags } from '@nestjs/swagger';
+// import { ApiTags } from '@nestjs/swagger';
+
+// @Controller(`${ControllerPrefix.ADMIN}/roles`)
 
 @ApiTags('Roles')
-// @Controller(`${ControllerPrefix.ADMIN}/roles`)
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
@@ -33,12 +35,12 @@ export class RolesController {
     return this.rolesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.update(+id, updateRoleDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
   }
