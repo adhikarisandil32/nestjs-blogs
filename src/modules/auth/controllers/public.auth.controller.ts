@@ -15,6 +15,7 @@ export class AuthControllerPublic {
 
   @ResponseMessage('Login Success')
   @Post('login')
+  // @UseInterceptors(ClassSerializerInterceptor)
   login(@Body() authDto: authDto) {
     return this.authService.login(authDto);
   }
