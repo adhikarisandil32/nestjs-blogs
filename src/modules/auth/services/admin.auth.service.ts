@@ -52,8 +52,6 @@ export class AuthServiceAdmin {
     if (!isPasswordVerified)
       throw new UnauthorizedException("email or password does't match");
 
-    delete existingUser.password;
-
     const accessToken = this.jwtService.sign(
       {
         id: existingUser.id,

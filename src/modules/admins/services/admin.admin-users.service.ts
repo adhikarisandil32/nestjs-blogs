@@ -38,8 +38,6 @@ export class AdminsServiceAdmin {
 
     await this.adminsRepository.save(admin);
 
-    delete admin.password;
-
     return admin;
   }
 
@@ -105,8 +103,6 @@ export class AdminsServiceAdmin {
         role: true,
       },
     });
-
-    delete admin.password;
 
     return admin;
   }

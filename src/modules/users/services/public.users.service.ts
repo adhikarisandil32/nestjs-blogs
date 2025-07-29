@@ -39,8 +39,6 @@ export class UsersServicePublic {
 
     await this.usersRepository.save(user);
 
-    delete user.password;
-
     return user;
   }
 
