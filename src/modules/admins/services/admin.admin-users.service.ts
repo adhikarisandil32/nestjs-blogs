@@ -17,22 +17,20 @@ export class AdminsServiceAdmin {
     private readonly _dataSource: DataSource,
   ) {}
   async create(createAdminDto: CreateAdminDto) {
-    const existingUsersInAdmin = await this.adminsRepository.findOne({
-      where: {
-        email: createAdminDto.email,
-      },
-    });
+    const [existingUsersInAdmin, existingUsersInUsers] = await Promise.all([
+      this.adminsRepository.findOne({
+        where: {
+          email: createAdminDto.email,
+        },
+      }),
+      this._dataSource.manager.findOne(Users, {
+        where: {
+          email: createAdminDto.email,
+        },
+      }),
+    ]);
 
-    if (existingUsersInAdmin)
-      throw new ConflictException('user exists with this email');
-
-    const existingUsersInUsers = await this._dataSource.manager.findOne(Users, {
-      where: {
-        email: createAdminDto.email,
-      },
-    });
-
-    if (existingUsersInUsers)
+    if (existingUsersInAdmin || existingUsersInUsers)
       throw new ConflictException('user exists with this email');
 
     const preparedData = await this.prepareDataToCreateAdmin(createAdminDto);
