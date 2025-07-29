@@ -1,6 +1,7 @@
 import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { BeforeInsert, Column } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Exclude } from 'class-transformer';
 
 export class UsersBaseEntity extends DBBaseEntity {
   @Column({ nullable: false })
@@ -9,6 +10,7 @@ export class UsersBaseEntity extends DBBaseEntity {
   @Column({ nullable: false, unique: true })
   email: string;
 
+  @Exclude()
   @Column({ nullable: false })
   password: string;
 
