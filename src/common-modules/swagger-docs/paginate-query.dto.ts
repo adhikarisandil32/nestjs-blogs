@@ -26,7 +26,6 @@ export class PaginatedQueryDto {
 
   @ApiPropertyOptional({
     type: 'string',
-    example: 'createdAt',
   })
   @IsString()
   @IsOptional()
