@@ -51,8 +51,6 @@ export class ResponseInterceptor implements NestInterceptor {
 
         let _paginationMetadata: IPaginationMetadata;
 
-        // console.log({ queryParams: requestQuery.skipPagination });
-
         if (requestQuery?.skipPagination) {
           _paginationMetadata = {
             total: count,
@@ -63,7 +61,9 @@ export class ResponseInterceptor implements NestInterceptor {
             nextPage: null,
             skipPagination: true,
           };
-        } else {
+        }
+
+        if (!requestQuery?.skipPagination) {
           _paginationMetadata = {
             total: count,
             limit: requestQuery.limit ?? 10,
@@ -77,6 +77,7 @@ export class ResponseInterceptor implements NestInterceptor {
             get nextPage() {
               return this.page >= this.totalPage ? null : this.page + 1;
             },
+            skipPagination: false,
           };
         }
 
