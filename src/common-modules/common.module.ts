@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { LoggerModule } from 'nestjs-pino';
 import { ResponseModule } from './response/respose.module';
+import { ErrorFilterModule } from './error/error.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ResponseModule } from './response/respose.module';
       },
     }),
     ResponseModule,
+    ErrorFilterModule,
   ],
 })
 export class CommonModules {}
