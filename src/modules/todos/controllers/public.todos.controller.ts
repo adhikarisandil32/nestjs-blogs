@@ -15,7 +15,7 @@ import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
-import { TodosService } from '../services/todos.service';
+import { TodosServicePublic } from '../services/public.todos.service';
 import { PutPublicUser } from 'src/modules/auth/decorator/put-user.decorator';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 import { User } from 'src/common-modules/request/decorators/request.decorator';
@@ -25,30 +25,30 @@ import { Users } from 'src/modules/users/entities/user.entity';
 // @Controller(`${ControllerPrefix.PUBLIC}/todos`)
 @Controller('todos')
 export class TodosControllerPublic {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosServicePublic) {}
 
-  // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
   @Post('create')
   @PutPublicUser()
   @ResponseMessage('Todo create success')
-  // below pipe will only validate and put it into body whose dtos are created is validated
-  // @UsePipes(new ValidationPipe({ whitelist: true }))
-  // or look at main.ts to see how validaiton pipe can be used globally
   create(@User() user: Users, @Body() createTodoDto: CreateTodosDto) {
     return this.todosService.create(user, createTodoDto);
   }
 
   @PutPublicUser()
-  @Get()
   @ResponseMessage('Todos fetch success')
   @ShowPagination()
-  // @SetMetadata('ShowPagination', true)
+  @Get()
   findAllPaginated(
     @User() user: Users,
     @Query() searchParams: PaginatedQueryDto,
   ): {} {
-    return this.todosService.findAllPaginated(user, { searchParams });
+    return this.todosService.findAllPaginated({
+      user,
+      searchParams,
+      validSortKeys: ['title', 'createdAt', 'updatedAt'],
+      validSearchKeys: ['title', 'description'],
+    });
   }
 
   @ApiOperation({ summary: 'List a todos by id' })
