@@ -102,10 +102,29 @@ export class UsersServicePublic {
     user: Users;
     updateUserDto: UpdateUserDto;
   }) {
-    console.log({ updateUserDto });
-    await this.usersRepository.update(user.id, {});
+    const afterUpdate = await this.usersRepository.update(
+      user.id,
+      updateUserDto,
+    );
 
-    return null;
+    if (afterUpdate.affected <= 0) {
+      throw new NotFoundException('user not found');
+    }
+
+    return await this.usersRepository.findOne({
+      where: {
+        id: user.id,
+      },
+      select: {
+        role: {
+          id: true,
+          role: true,
+        },
+      },
+      relations: {
+        role: true,
+      },
+    });
   }
 
   async changePassword({
