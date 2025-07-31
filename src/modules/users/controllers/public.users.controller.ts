@@ -8,9 +8,12 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UpdateUserDto, UpdateUserPassword } from '../dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UsersServicePublic } from '../services/public.users.service';
+import { User } from 'src/common-modules/request/decorators/request.decorator';
+import { Users } from '../entities/user.entity';
+import { PutPublicUser } from 'src/modules/auth/decorator/put-user.decorator';
 
 @ApiTags('Users')
 // @Controller(`${ControllerPrefix.PUBLIC}/users`)
@@ -23,13 +26,15 @@ export class UsersControllerPublic {
     return this.usersService.create(createUserDto);
   }
 
-  @Patch('update')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @PutPublicUser()
+  @Patch('me/update')
+  update(@User() user: Users, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update({ user, updateUserDto });
   }
 
-  @Delete('delete')
-  remove() {
-    return this.usersService.remove();
+  @PutPublicUser()
+  @Patch('me/change-password')
+  changePassword(@User() user: Users, @Body() passwords: UpdateUserPassword) {
+    return this.usersService.changePassword({ user, passwords });
   }
 }
