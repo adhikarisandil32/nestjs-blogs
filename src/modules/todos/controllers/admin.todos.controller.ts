@@ -11,22 +11,21 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
-import { Request as IRequest } from 'express';
 import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
 import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
-import { TodosService } from '../services/todos.service';
 import { Users } from 'src/modules/users/entities/user.entity';
 import { User } from 'src/common-modules/request/decorators/request.decorator';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { TodosServiceAdmin } from '../services/admin.todos.service';
 
 @ApiTags('Todos')
 // @Controller(`${ControllerPrefix.ADMIN}/todos`)
 @Controller('todos')
 export class TodosControllerAdmin {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosServiceAdmin) {}
 
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
