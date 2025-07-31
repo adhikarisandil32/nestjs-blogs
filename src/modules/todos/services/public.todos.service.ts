@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Todos } from '../entities/todos.entity';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
 import { Users } from 'src/modules/users/entities/user.entity';
+import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 
 @Injectable()
-export class TodosService {
+export class TodosServicePublic {
   constructor(
     @InjectRepository(Todos)
     private todosRepository: Repository<Todos>,
@@ -15,9 +16,6 @@ export class TodosService {
 
   async create(user: Users, createTodosDto: CreateTodosDto): Promise<Todos> {
     const newTodo = this.todosRepository.create({
-      // title: createTodosDto.title,
-      // isCompleted: createTodosDto.isCompleted,
-      // description: createTodosDto.description,
       ...createTodosDto,
       user: {
         id: user.id,
@@ -26,28 +24,31 @@ export class TodosService {
 
     await this.todosRepository.save(newTodo);
 
-    // if used this.todosRepository.insert(createTodosDto), then it doesn't need to be manually saved unlike above
-
     return newTodo;
   }
 
-  async findAllPaginated(
-    user: Users,
-    { searchParams },
-  ): Promise<{ data: Todos[]; count: number }> {
+  async findAllPaginated({
+    user,
+    searchParams,
+    validSortKeys,
+    validSearchKeys,
+  }: {
+    user: Users;
+    searchParams: PaginatedQueryDto;
+    validSortKeys: (keyof Todos)[];
+    validSearchKeys: (keyof Todos)[];
+  }): Promise<[Todos[], number]> {
     const sorting = {};
-    const validSortKeys: (keyof Todos)[] = [
-      'id',
-      'title',
-      'description',
-      'isCompleted',
-    ];
+    const search = {};
 
-    if (searchParams.sort) {
-      const [sortTitle, sortValue] = searchParams.sort.split('.');
+    if (validSortKeys.includes(searchParams.sortField as keyof Todos))
+      sorting[searchParams.sortField] =
+        searchParams.sortOrder.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
 
-      if (validSortKeys.includes(sortTitle))
-        sorting[sortTitle] = sortValue.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    if (validSearchKeys.includes(searchParams.searchField as keyof Todos)) {
+      search[searchParams.searchField] = ILike(
+        `%${searchParams.search ?? ''}%`,
+      );
     }
 
     const currentPage =
@@ -55,11 +56,12 @@ export class TodosService {
     const limit = +(searchParams.limit ?? 10);
     const offset = (currentPage - 1) * limit;
 
-    const [data, count] = await this.todosRepository.findAndCount({
+    const data = await this.todosRepository.findAndCount({
       where: {
         user: {
           id: user.id,
         },
+        ...search,
       },
       select: { id: true, isCompleted: true, title: true },
       order: { ...sorting },
@@ -67,35 +69,8 @@ export class TodosService {
       skip: offset,
     });
 
-    return { data, count };
+    return data;
   }
-
-  // async findAll({ searchParams }): Promise<Todos[]> {
-  //   const sorting = {};
-  //   // typeof Todos is important. Also see immediate below comment for more type in nest.
-  //   const validSortKeys: (keyof Todos)[] = [
-  //     'id',
-  //     'title',
-  //     'description',
-  //     'isCompleted',
-  //   ];
-
-  //   // this is also a way to get types with FindOneOptions<Entity>, uncomment below and see for yourself
-  //   // const validSortKeys2: FindOneOptions<Todos>['select'] = {};
-
-  //   if (searchParams.sort) {
-  //     const [sortTitle, sortValue] = searchParams.sort.split('.');
-
-  //     if (validSortKeys.includes(sortTitle)) sorting[sortTitle] = sortValue;
-  //   }
-
-  //   const data = await this.todosRepository.find({
-  //     select: { id: true, isCompleted: true, title: true },
-  //     order: { ...sorting },
-  //   });
-
-  //   return data;
-  // }
 
   async findOne(user: Users, id: number): Promise<Todos> {
     const data = await this.todosRepository.findOne({
@@ -139,6 +114,9 @@ export class TodosService {
     const updatedResult = await this.todosRepository.findOne({
       where: {
         id,
+        user: {
+          id: user.id,
+        },
       },
     });
 
