@@ -1,12 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UpdateUserDto, UpdateUserPassword } from '../dto/update-user.dto';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../entities/user.entity';
 import { Roles } from 'src/modules/roles/entities/role.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersServicePublic {
@@ -89,12 +95,54 @@ export class UsersServicePublic {
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update({
+    user,
+    updateUserDto,
+  }: {
+    user: Users;
+    updateUserDto: UpdateUserDto;
+  }) {
+    console.log({ updateUserDto });
+    await this.usersRepository.update(user.id, {});
+
+    return null;
   }
 
-  remove() {
-    return `This action removes me`;
+  async changePassword({
+    user,
+    passwords,
+  }: {
+    user: Users;
+    passwords: UpdateUserPassword;
+  }) {
+    const existingUser = await this.usersRepository.findOne({
+      where: {
+        id: user.id,
+        email: user.email,
+      },
+    });
+
+    if (!existingUser) {
+      throw new NotFoundException('user not found');
+    }
+
+    const doesPasswordMatch = await bcrypt.compare(
+      passwords.oldPassword,
+      existingUser.password,
+    );
+
+    if (!doesPasswordMatch) {
+      throw new UnauthorizedException("password doesn't match");
+    }
+    console.log({ doesPasswordMatch });
+
+    const hashedNewPassword = await bcrypt.hash(passwords.newPassword, 10);
+
+    await this.usersRepository.update(user.id, {
+      password: hashedNewPassword,
+    });
+
+    return user;
   }
 
   async prepareUserCreateData(createUserDto: CreateUserDto) {
