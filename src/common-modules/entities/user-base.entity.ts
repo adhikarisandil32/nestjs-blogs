@@ -1,5 +1,5 @@
 import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
-import { BeforeInsert, Column } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
 
@@ -19,6 +19,7 @@ export class UsersBaseEntity extends DBBaseEntity {
   // role: Roles;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async hashPassword() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, 10);
