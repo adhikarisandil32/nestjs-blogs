@@ -46,53 +46,6 @@ export class UsersServicePublic {
     return user;
   }
 
-  async findAll() {
-    const users = await this.usersRepository.find({
-      select: {
-        createdAt: true,
-        deletedAt: true,
-        email: true,
-        id: true,
-        name: true,
-        updatedAt: true,
-        role: {
-          id: true,
-          role: true,
-        },
-      },
-      relations: {
-        role: true,
-      },
-    });
-
-    return users;
-  }
-
-  async findOne(id: number) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        id,
-      },
-      select: {
-        createdAt: true,
-        deletedAt: true,
-        email: true,
-        id: true,
-        name: true,
-        updatedAt: true,
-        role: {
-          id: true,
-          role: true,
-        },
-      },
-      relations: {
-        role: true,
-      },
-    });
-
-    return user;
-  }
-
   async update({
     user,
     updateUserDto,
