@@ -43,11 +43,9 @@ export class TodosControllerPublic {
     @User() user: Users,
     @Query() searchParams: PaginatedQueryDto,
   ): {} {
-    return this.todosService.findAllPaginated({
+    return this.todosService.findPaginated({
       user,
       searchParams,
-      validSortKeys: ['title', 'createdAt', 'updatedAt'],
-      validSearchKeys: ['title', 'description'],
     });
   }
 
