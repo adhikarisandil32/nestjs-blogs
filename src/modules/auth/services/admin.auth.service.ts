@@ -1,9 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { authDto } from '../dto/auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
+import { UpdateAdminPasswordDto } from 'src/modules/admins/dto/update-admin-user.dto';
 
 @Injectable()
 export class AuthServiceAdmin {
@@ -13,19 +18,6 @@ export class AuthServiceAdmin {
   ) {}
 
   async login(authDto: authDto) {
-    // const existingUser = await this._dataSource.manager
-    //   .createQueryBuilder(Admins, 'admin')
-    //   .leftJoinAndSelect('admin.role', 'roles')
-    //   .select([
-    //     'admin.id',
-    //     'admin.name',
-    //     'admin.email',
-    //     'roles.id',
-    //     'roles.role',
-    //   ])
-    //   .where('admin.email = :email', { email: authDto.email })
-    //   .getOne();
-
     const existingUser = await this._dataSource.manager.findOne(Admins, {
       where: {
         email: authDto.email,
@@ -66,6 +58,42 @@ export class AuthServiceAdmin {
   }
 
   findMe(admin: Admins): Admins {
+    return admin;
+  }
+
+  async changePassword({
+    admin,
+    passwords,
+  }: {
+    admin: Admins;
+    passwords: UpdateAdminPasswordDto;
+  }) {
+    const existingUser = await this._dataSource.manager.findOne(Admins, {
+      where: {
+        id: admin.id,
+        email: admin.email,
+      },
+    });
+
+    if (!existingUser) {
+      throw new NotFoundException('admin not found');
+    }
+
+    const doesPasswordMatch = await bcrypt.compare(
+      passwords.oldPassword,
+      existingUser.password,
+    );
+
+    if (!doesPasswordMatch) {
+      throw new UnauthorizedException("passwords don't match");
+    }
+
+    const adminDto = this._dataSource.manager.create(Admins, {
+      password: passwords.newPassword,
+    });
+
+    await this._dataSource.manager.update(Admins, admin.id, adminDto);
+
     return admin;
   }
 }
