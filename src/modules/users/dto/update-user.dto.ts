@@ -1,7 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { BeforeInsert, BeforeUpdate } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
 
 export class UpdateUserDto {
   @ApiProperty({
