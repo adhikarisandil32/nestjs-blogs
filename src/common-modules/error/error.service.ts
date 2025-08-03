@@ -18,7 +18,7 @@ export class ErrorService implements ExceptionFilter {
     // console.log(exception);
 
     const errorMessage = Array.isArray(exceptionResponse.message)
-      ? exceptionResponse.message.join(', ')
+      ? exceptionResponse.message?.[0]
       : exceptionResponse.message;
 
     this._loggerService.error(exceptionResponse, exception.stack, 'app-error');
