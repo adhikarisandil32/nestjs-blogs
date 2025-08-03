@@ -18,6 +18,8 @@ import {
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { Admins } from '../entities/admin.entity';
+import { User } from 'src/common-modules/request/decorators/request.decorator';
 
 @ApiTags('Admins')
 // @Controller(`${ControllerPrefix.ADMIN}/admins`)
@@ -35,9 +37,9 @@ export class AdminsController {
   @ResponseMessage('admins fetch success')
   @ShowPagination()
   @Get()
-  findAll(@Query() queryParams: PaginatedQueryDto) {
+  findAllPaginated(@Query() queryParams: PaginatedQueryDto) {
     // console.log(queryParams);
-    return this.adminsService.findAll(queryParams);
+    return this.adminsService.findAllPaginated(queryParams);
   }
 
   @Get(':id')
@@ -46,15 +48,9 @@ export class AdminsController {
     return this.adminsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/me')
   @PutAdmin()
-  update(@Param('id') id: string, @Body() updateAdminDto: UpdateAdminDto) {
-    return this.adminsService.update(+id, updateAdminDto);
-  }
-
-  @Delete(':id')
-  @PutAdmin()
-  remove(@Param('id') id: string) {
-    return this.adminsService.remove(+id);
+  update(@User() admin: Admins, @Body() updateAdminDto: UpdateAdminDto) {
+    return this.adminsService.update({ admin, updateAdminDto });
   }
 }
