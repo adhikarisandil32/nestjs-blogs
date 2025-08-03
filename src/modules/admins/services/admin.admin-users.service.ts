@@ -8,6 +8,7 @@ import { Roles } from 'src/modules/roles/entities/role.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Users } from 'src/modules/users/entities/user.entity';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
 
 @Injectable()
 export class AdminsServiceAdmin {
@@ -41,47 +42,22 @@ export class AdminsServiceAdmin {
     return admin;
   }
 
-  async findAll(queryParams: PaginatedQueryDto) {
-    const sorting = {};
-    const validSortKeys: (keyof Admins)[] = [
-      'id',
-      'createdAt',
-      'deletedAt',
-      'email',
-      'name',
-    ];
-
-    if (validSortKeys.includes(queryParams.sortField as keyof Admins)) {
-      sorting[queryParams.sortField] = queryParams.sortOrder ?? 'DESC';
-    }
-
-    const currentPage =
-      +(queryParams.page ?? 1) > 1 ? +(queryParams.page ?? 1) : 1;
-    const limit = +(queryParams.limit ?? 10);
-    const offset = (currentPage - 1) * limit;
-
-    const data = await this.adminsRepository.findAndCount({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: {
-          id: true,
+  async findAllPaginated(queryParams: PaginatedQueryDto) {
+    const data = await findAllPaginatedData<Admins>({
+      ...queryParams,
+      repo: this.adminsRepository,
+      validSearchFields: ['email', 'name'],
+      validSortFields: ['email', 'name', 'createdAt'],
+      queryOptions: {
+        select: {
+          role: {
+            id: true,
+            role: true,
+          },
+        },
+        relations: {
           role: true,
         },
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-      },
-      order: { ...sorting },
-      ...(queryParams.skipPagination
-        ? {
-            take: limit,
-            skip: offset,
-          }
-        : {}),
-      relations: {
-        role: true,
       },
     });
 
@@ -107,12 +83,31 @@ export class AdminsServiceAdmin {
     return admin;
   }
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
+  async update({
+    admin,
+    updateAdminDto,
+  }: {
+    admin: Admins;
+    updateAdminDto: UpdateAdminDto;
+  }) {
+    const preparedUpdate = this.adminsRepository.create(updateAdminDto);
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+    await this.adminsRepository.update(admin.id, preparedUpdate);
+
+    const updatedData = await this.adminsRepository.findOne({
+      where: {
+        id: admin.id,
+      },
+      select: {
+        id: true,
+        role: true,
+      },
+      relations: {
+        role: true,
+      },
+    });
+
+    return updatedData;
   }
 
   async prepareDataToCreateAdmin(createAdminDto: CreateAdminDto) {
