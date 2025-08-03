@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateAdminDto } from './create-admin-user.dto';
+import {
+  UpdateUserDto,
+  UpdateUserPasswordDto,
+} from 'src/modules/users/dto/update-user.dto';
 
-export class UpdateAdminDto extends PartialType(CreateAdminDto) {}
+export class UpdateAdminDto extends UpdateUserDto {}
+
+export class UpdateAdminPasswordDto extends UpdateUserPasswordDto {}
