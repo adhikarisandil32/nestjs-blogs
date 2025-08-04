@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { AdminsModule } from 'src/modules/admins/admins.module';
-import { AdminsController } from 'src/modules/admins/controller/admin.admins.controller';
+import { AdminsController } from 'src/modules/admins/controller/admin.admin-users.controller';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { AuthControllerAdmin } from 'src/modules/auth/controllers/admin.auth.controller';
 import { RolesController } from 'src/modules/roles/controllers/admin.roles.controller';

@@ -7,94 +7,69 @@ import {
   Patch,
   Post,
   Query,
-  Request,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
-import { Request as IRequest } from 'express';
 import {
   ResponseMessage,
   ShowPagination,
 } from 'src/common-modules/response/decorators/response.decorator';
 import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
-import { TodosService } from '../services/todos.service';
+import { Users } from 'src/modules/users/entities/user.entity';
+import { User } from 'src/common-modules/request/decorators/request.decorator';
+import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { TodosServiceAdmin } from '../services/admin.todos.service';
 
 @ApiTags('Todos')
 // @Controller(`${ControllerPrefix.ADMIN}/todos`)
 @Controller('todos')
 export class TodosControllerAdmin {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosServiceAdmin) {}
 
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
-  @ApiBearerAuth()
   @Post('create')
   @PutAdmin()
   @ResponseMessage('Todo create success')
   // below pipe will only validate and put it into body whose dtos are created is validated
   // @UsePipes(new ValidationPipe({ whitelist: true }))
   // or look at main.ts to see how validaiton pipe can be used globally
-  create(@Body() createTodoDto: CreateTodosDto, @Request() request: IRequest) {
-    return this.todosService.create(request, createTodoDto);
+  create(@User() user: Users, @Body() createTodoDto: CreateTodosDto) {
+    return this.todosService.create(user, createTodoDto);
   }
 
   @ApiOperation({ summary: 'List all todos' })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: 'integer',
-  })
-  @ApiQuery({
-    name: 'sort',
-    required: false,
-    type: 'string',
-    example: 'title.asc',
-    description: 'in the format of key.sort_order',
-  })
-  @ApiBearerAuth()
   @Get()
   @ResponseMessage('Todos fetch success')
   @ShowPagination()
   @PutAdmin()
   // @SetMetadata('ShowPagination', true)
   findAllPaginated(
-    @Request() request: IRequest,
-    @Query() searchParams: Record<string, any>,
+    @User() user: Users,
+    @Query() searchParams: PaginatedQueryDto,
   ): {} {
-    return this.todosService.findAllPaginated(request, { searchParams });
+    return this.todosService.findAllPaginated(user, { searchParams });
   }
 
   @ApiOperation({ summary: 'List a todos by id' })
   @ResponseMessage('Todo fetch success')
   @Get(':id')
   @PutAdmin()
-  @ApiBearerAuth()
-  findOne(@Request() request: IRequest, @Param('id') id: string) {
-    return this.todosService.findOne(request, +id);
+  findOne(@User() user: Users, @Param('id') id: string) {
+    return this.todosService.findOne(user, +id);
   }
 
   @ApiOperation({ summary: 'Update a todo' })
   @ResponseMessage('Update todo success')
   @Patch(':id')
   @PutAdmin()
-  @ApiBearerAuth()
   update(
-    @Request() request: IRequest,
+    @User() user: Users,
     @Param('id') id: string,
     @Body() updateTodosDto: UpdateTodosDto,
   ) {
-    return this.todosService.update(request, +id, updateTodosDto);
+    return this.todosService.update(user, +id, updateTodosDto);
   }
 
   @ApiOperation({ summary: 'Delete a todo' })
@@ -102,8 +77,7 @@ export class TodosControllerAdmin {
   @ResponseMessage('Todo delete success')
   @Delete(':id')
   @PutAdmin()
-  @ApiBearerAuth()
-  remove(@Request() request: IRequest, @Param('id') id: string) {
-    return this.todosService.remove(request, +id);
+  remove(@User() user: Users, @Param('id') id: string) {
+    return this.todosService.remove(user, +id);
   }
 }

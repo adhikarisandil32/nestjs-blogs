@@ -9,6 +9,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Request, Response } from 'express';
 import { IPaginationMetadata } from './interfaces/pagination-metadata.interface';
+import { PaginatedQueryDto } from '../swagger-docs/paginate-query.dto';
+import { plainToInstance } from 'class-transformer';
 
 export class ResponseInterceptor implements NestInterceptor {
   constructor(@Inject() private readonly _reflector: Reflector) {}
@@ -18,10 +20,12 @@ export class ResponseInterceptor implements NestInterceptor {
     next: CallHandler<any>,
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
-      map((dataAndCount) => {
+      map((dataFromService) => {
         const ctx = context.switchToHttp();
         const response: Response = ctx.getResponse();
         const request = ctx.getRequest<Request>();
+
+        const requestQuery = plainToInstance(PaginatedQueryDto, request.query);
 
         const message = this._reflector.get('message', context.getHandler());
         const showPagination = this._reflector.get(
@@ -29,31 +33,53 @@ export class ResponseInterceptor implements NestInterceptor {
           context.getHandler(),
         );
 
-        const { data, count } = dataAndCount ?? {};
+        let data: any, count: number;
+        if (Array.isArray(dataFromService)) {
+          [data, count] = dataFromService;
+        } else {
+          data = dataFromService;
+        }
 
         if (!showPagination || count == null) {
           return {
-            message,
+            message: message ?? 'Request Success',
             status: response.statusCode,
             success: response.statusCode < 400,
-            ...(dataAndCount ? { data: dataAndCount } : {}),
+            ...(data ? { data } : {}),
           };
         }
 
-        const _paginationMetadata: IPaginationMetadata = {
-          total: count,
-          limit: Number(request.query?.limit ?? 10),
-          page: Number(request.query?.page ?? 1),
-          get totalPage() {
-            return Math.ceil(count / this.limit);
-          },
-          get nextPage() {
-            return this.page >= this.totalPage ? null : this.page + 1;
-          },
-          get prevPage() {
-            return this.page <= 1 ? null : this.page - 1;
-          },
-        };
+        let _paginationMetadata: IPaginationMetadata;
+
+        if (requestQuery?.skipPagination) {
+          _paginationMetadata = {
+            total: count,
+            limit: 0,
+            page: 0,
+            totalPage: 0,
+            prevPage: null,
+            nextPage: null,
+            skipPagination: true,
+          };
+        }
+
+        if (!requestQuery?.skipPagination) {
+          _paginationMetadata = {
+            total: count,
+            limit: requestQuery.limit ?? 10,
+            page: requestQuery.page ?? 1,
+            get totalPage() {
+              return Math.ceil(count / this.limit);
+            },
+            get prevPage() {
+              return this.page <= 1 ? null : this.page - 1;
+            },
+            get nextPage() {
+              return this.page >= this.totalPage ? null : this.page + 1;
+            },
+            skipPagination: false,
+          };
+        }
 
         return {
           message: message ?? 'Request Success',

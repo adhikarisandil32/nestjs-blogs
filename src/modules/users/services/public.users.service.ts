@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { DataSource, Repository } from 'typeorm';
@@ -17,23 +21,20 @@ export class UsersServicePublic {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existingUserInUsers = await this.usersRepository.findOne({
-      where: {
-        email: createUserDto.email,
-      },
-    });
-    if (existingUserInUsers)
-      throw new ConflictException('user already exists with this email');
-
-    const existingUsersInAdmins = await this._dataSource.manager.findOne(
-      Admins,
-      {
+    const [existingUserInUsers, existingUserInAdmins] = await Promise.all([
+      this.usersRepository.findOne({
         where: {
           email: createUserDto.email,
         },
-      },
-    );
-    if (existingUsersInAdmins)
+      }),
+      this._dataSource.manager.findOne(Admins, {
+        where: {
+          email: createUserDto.email,
+        },
+      }),
+    ]);
+
+    if (existingUserInUsers || existingUserInAdmins)
       throw new ConflictException('user already exists with this email');
 
     const preparedData = await this.prepareUserCreateData(createUserDto);
@@ -42,45 +43,30 @@ export class UsersServicePublic {
 
     await this.usersRepository.save(user);
 
-    delete user.password;
-
     return user;
   }
 
-  async findAll() {
-    const users = await this.usersRepository.find({
-      select: {
-        createdAt: true,
-        deletedAt: true,
-        email: true,
-        id: true,
-        name: true,
-        updatedAt: true,
-        role: {
-          id: true,
-          role: true,
-        },
-      },
-      relations: {
-        role: true,
-      },
-    });
+  async update({
+    user,
+    updateUserDto,
+  }: {
+    user: Users;
+    updateUserDto: UpdateUserDto;
+  }) {
+    const afterUpdate = await this.usersRepository.update(
+      user.id,
+      updateUserDto,
+    );
 
-    return users;
-  }
+    if (afterUpdate.affected <= 0) {
+      throw new NotFoundException('user not found');
+    }
 
-  async findOne(id: number) {
-    const user = await this.usersRepository.findOne({
+    return await this.usersRepository.findOne({
       where: {
-        id,
+        id: user.id,
       },
       select: {
-        createdAt: true,
-        deletedAt: true,
-        email: true,
-        id: true,
-        name: true,
-        updatedAt: true,
         role: {
           id: true,
           role: true,
@@ -90,16 +76,6 @@ export class UsersServicePublic {
         role: true,
       },
     });
-
-    return user;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove() {
-    return `This action removes me`;
   }
 
   async prepareUserCreateData(createUserDto: CreateUserDto) {

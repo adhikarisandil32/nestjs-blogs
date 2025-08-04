@@ -35,6 +35,7 @@ export async function swaggerInit(app: NestApplication) {
       docExpansion: false,
       persistAuthorization: true,
       filter: true,
+      displayRequestDuration: true,
     },
   });
 
@@ -69,6 +70,7 @@ export async function swaggerInit(app: NestApplication) {
       docExpansion: false,
       persistAuthorization: true,
       filter: true,
+      displayRequestDuration: true,
     },
   });
 }

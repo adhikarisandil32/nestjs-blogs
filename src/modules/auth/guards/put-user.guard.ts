@@ -72,8 +72,6 @@ export class PublicUserGuard implements CanActivate {
     if (user.role.role !== UserRole.USER)
       throw new UnauthorizedException('unauthorized access');
 
-    delete user.password;
-
     request['user'] = user;
 
     return;
@@ -133,8 +131,6 @@ export class AdminGuard implements CanActivate {
 
     if (admin.role.role !== UserRole.ADMIN)
       throw new UnauthorizedException('unauthorized access');
-
-    delete admin.password;
 
     request['user'] = admin;
 

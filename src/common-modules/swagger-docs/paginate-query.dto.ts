@@ -1,33 +1,75 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 
-export class PaginateQueryDto {
+export class PaginatedQueryDto {
   @ApiPropertyOptional({
-    name: 'sort',
     type: 'string',
-    description: 'Enter in the format of property_key.sort_order',
-    example: 'createdAt.asc',
+  })
+  @IsOptional()
+  @IsString()
+  searchField: string;
+
+  @ApiPropertyOptional({
+    type: 'string',
+  })
+  @IsOptional()
+  @IsString()
+  search: string;
+
+  @ApiPropertyOptional({
+    type: 'string',
   })
   @IsString()
   @IsOptional()
-  sort: string;
+  sortField: string;
 
   @ApiPropertyOptional({
-    name: 'limit',
+    enum: ['ASC', 'DESC'],
+  })
+  @IsOptional()
+  @IsString()
+  sortOrder: string;
+
+  @ApiPropertyOptional({
     type: 'integer',
+    description: 'between 1 and 100',
   })
   @IsNumber()
   @IsOptional()
+  @Min(1)
+  @Max(100)
   @Type(() => Number)
   limit: number;
 
   @ApiPropertyOptional({
-    name: 'page',
     type: 'integer',
   })
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
   page: number;
+
+  @ApiPropertyOptional({
+    type: 'boolean',
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (value === 'true' || value === true) {
+      return true;
+    }
+    if (value === 'false' || value === false) {
+      return false;
+    }
+    return undefined;
+  })
+  skipPagination: boolean;
 }
