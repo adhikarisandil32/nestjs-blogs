@@ -24,13 +24,13 @@
 <title>cluster_TodosModule</title>
 <polygon fill="none" stroke="black" stroke-dasharray="1,5" points="43,-70 43,-268 453,-268 453,-70 43,-70"/>
 </g>
-<g id="clust4" class="cluster">
-<title>cluster_TodosModule_exports</title>
-<polygon fill="none" stroke="black" points="80,-208 80,-260 382,-260 382,-208 80,-208"/>
-</g>
 <g id="clust6" class="cluster">
 <title>cluster_TodosModule_providers</title>
 <polygon fill="none" stroke="black" points="51,-78 51,-130 445,-130 445,-78 51,-78"/>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_TodosModule_exports</title>
+<polygon fill="none" stroke="black" points="80,-208 80,-260 382,-260 382,-208 80,-208"/>
 </g>
 <!-- TodosServiceAdmin  -->
 <g id="node1" class="node">

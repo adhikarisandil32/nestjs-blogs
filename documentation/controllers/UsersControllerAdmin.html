@@ -142,13 +142,17 @@
                         <ul class="index-list">
                             <li>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                 <a href="#create" >create</a>
                             </li>
                             <li>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                 <a href="#findAll" >findAll</a>
                             </li>
                             <li>
+                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                 <a href="#findOne" >findOne</a>
                             </li>
@@ -185,6 +189,7 @@
                     <a name="create"></a>
                     <span class="name">
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>create</b></span>
                         <a href="#create"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -201,14 +206,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Post(&#x27;create&#x27;)<br /></code>
+                    <code>@Post(&#x27;create&#x27;)<br />@PutAdmin()<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="22"
-                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:22</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="26"
+                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:26</a></div>
                         </td>
                     </tr>
 
@@ -261,6 +266,8 @@
                     <a name="findAll"></a>
                     <span class="name">
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>findAll</b></span>
                         <a href="#findAll"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -269,7 +276,7 @@
             <tr>
                 <td class="col-md-4">
                         <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>findAll()</code>
+                    <code>findAll(queryParams: <a href="../classes/PaginatedQueryDto.html" target="_self">PaginatedQueryDto</a>)</code>
                 </td>
             </tr>
 
@@ -277,60 +284,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Get()<br /></code>
+                    <code>@PutAdmin()<br />@ShowPagination()<br />@Get()<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="27"
-                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:27</a></div>
-                        </td>
-                    </tr>
-
-
-            <tr>
-                <td class="col-md-4">
-
-                        <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
-
-                        </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table table-sm table-bordered">
-        <tbody>
-            <tr>
-                <td class="col-md-4">
-                    <a name="findOne"></a>
-                    <span class="name">
-                            <span class="modifier"></span>
-                        <span ><b>findOne</b></span>
-                        <a href="#findOne"><span class="icon ion-ios-link"></span></a>
-                    </span>
-                </td>
-            </tr>
-            <tr>
-                <td class="col-md-4">
-                        <span class="modifier-icon icon ion-ios-reset"></span>
-                    <code>findOne(id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="col-md-4">
-                    <b>Decorators : </b>
-                    <br />
-                    <code>@Get(&#x27;:id&#x27;)<br /></code>
-                </td>
-            </tr>
-
-                    <tr>
-                        <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="32"
-                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:32</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -351,7 +312,84 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                                <td>id</td>
+                                                <td>queryParams</td>
+                                            <td>
+                                                            <code><a href="../classes/PaginatedQueryDto.html" target="_self" >PaginatedQueryDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="findOne"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                        <span ><b>findOne</b></span>
+                        <a href="#findOne"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>findOne(userId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@PutAdmin()<br />@Get(&#x27;:userId&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="39"
+                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:39</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>userId</td>
                                             <td>
                                                             <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
                                             </td>
@@ -406,8 +444,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="43"
-                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:43</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="50"
+                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:50</a></div>
                         </td>
                     </tr>
 
@@ -482,8 +520,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="37"
-                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:37</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="44"
+                                    class="link-to-prism">src/modules/users/controllers/admin.users.controller.ts:44</a></div>
                         </td>
                     </tr>
 
@@ -558,6 +596,9 @@ import { CreateUserDto } from &#x27;../dto/create-user.dto&#x27;;
 import { UpdateUserDto } from &#x27;../dto/update-user.dto&#x27;;
 import { ApiExcludeEndpoint, ApiTags } from &#x27;@nestjs/swagger&#x27;;
 import { UsersServiceAdmin } from &#x27;../services/admin.users.service&#x27;;
+import { PutAdmin } from &#x27;src/modules/auth/decorator/put-user.decorator&#x27;;
+import { PaginatedQueryDto } from &#x27;src/common-modules/swagger-docs/paginate-query.dto&#x27;;
+import { ShowPagination } from &#x27;src/common-modules/response/decorators/response.decorator&#x27;;
 
 @ApiTags(&#x27;Users&#x27;)
 // @Controller(&#x60;${ControllerPrefix.ADMIN}/users&#x60;)
@@ -566,18 +607,22 @@ export class UsersControllerAdmin {
   constructor(private readonly usersService: UsersServiceAdmin) {}
 
   @Post(&#x27;create&#x27;)
+  @PutAdmin()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
+  @PutAdmin()
+  @ShowPagination()
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Body() queryParams: PaginatedQueryDto) {
+    return this.usersService.findPaginated(queryParams);
   }
 
-  @Get(&#x27;:id&#x27;)
-  findOne(@Param(&#x27;id&#x27;) id: string) {
-    return this.usersService.findOne(+id);
+  @PutAdmin()
+  @Get(&#x27;:userId&#x27;)
+  findOne(@Param(&#x27;userId&#x27;) userId: string) {
+    return this.usersService.findOne(+userId);
   }
 
   @Patch(&#x27;:id&#x27;)
