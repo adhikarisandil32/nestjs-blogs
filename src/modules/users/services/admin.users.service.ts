@@ -1,49 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../entities/user.entity';
+import { UserRole } from 'src/constants/user-roles.constant';
+import { Roles } from 'src/modules/roles/entities/role.entity';
+import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
+import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 
 @Injectable()
 export class UsersServiceAdmin {
   constructor(
     @InjectRepository(Users)
     private usersRepository: Repository<Users>,
+    private _dataSource: DataSource,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try {
-      await this.usersRepository.insert(createUserDto);
+    const [existingUserInUsers, existingUserInAdmins] = await Promise.all([
+      this.usersRepository.findOne({
+        where: {
+          email: createUserDto.email,
+        },
+      }),
+      this._dataSource.manager.findOne(Users, {
+        where: {
+          email: createUserDto.email,
+        },
+      }),
+    ]);
 
-      return {
-        message: 'User Creation success',
-        status: 200,
-        success: true,
-        data: createUserDto,
-      };
-    } catch (error) {
-      return {
-        message: error.message,
-        success: false,
-        data: null,
-      };
-    }
+    if (existingUserInUsers || existingUserInAdmins)
+      throw new ConflictException('user already exists with this email');
+
+    const preparedData = await this.prepareUserCreateData(createUserDto);
+
+    const user = this.usersRepository.create(preparedData);
+
+    await this.usersRepository.save(user);
+
+    return user;
   }
 
-  async findAll() {
-    const users = await this.usersRepository.find({
-      select: {
-        createdAt: true,
-        deletedAt: true,
-        updatedAt: true,
-        email: true,
-        id: true,
-        name: true,
-      },
+  async findPaginated(queryParams: PaginatedQueryDto) {
+    const data = findAllPaginatedData<Users>({
+      ...queryParams,
+      repo: this.usersRepository,
+      validSearchFields: [],
+      validSortFields: [],
+      queryOptions: {},
     });
 
-    return users;
+    return data;
   }
 
   async findOne(id: number) {
@@ -61,14 +74,45 @@ export class UsersServiceAdmin {
       },
     });
 
+    if (!user) throw new NotFoundException("user doesn't exist");
+
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const prepareUpdateUserData = this.usersRepository.create(updateUserDto);
+
+    const afterUpdate = await this.usersRepository.update(
+      id,
+      prepareUpdateUserData,
+    );
+
+    let data: Users;
+    if (afterUpdate.affected > 0) {
+      data = await this.usersRepository.findOne({ where: { id } });
+    }
+
+    return data;
   }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async prepareUserCreateData(createUserDto: CreateUserDto) {
+    const publicUserRole = await this._dataSource.manager.findOne(Roles, {
+      where: {
+        role: UserRole.USER,
+      },
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    return {
+      ...createUserDto,
+      role: publicUserRole,
+    };
   }
 }
