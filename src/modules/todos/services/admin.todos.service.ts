@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { Users } from 'src/modules/users/entities/user.entity';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
+import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
 
 @Injectable()
 export class TodosServiceAdmin {
@@ -17,12 +19,46 @@ export class TodosServiceAdmin {
     return {};
   }
 
-  findAllPaginated(user: Users, { searchParams }) {
-    return {};
+  async findAllPaginated({
+    userId,
+    searchParams,
+  }: {
+    userId: number;
+    searchParams: PaginatedQueryDto;
+  }) {
+    const data = await findAllPaginatedData<Todos>({
+      ...searchParams,
+      repo: this.todosRepository,
+      validSearchFields: [],
+      validSortFields: [],
+      queryOptions: {
+        where: {
+          user: {
+            id: userId,
+          },
+        },
+        select: {
+          id: true,
+          title: true,
+          deletedAt: true,
+          createdAt: true,
+          updatedAt: true,
+          isCompleted: true,
+        },
+      },
+    });
+
+    return data;
   }
 
-  findOne(user: Users, id: number) {
-    return {};
+  async findOne(todosId: number) {
+    const data = await this.todosRepository.findOne({
+      where: {
+        id: todosId,
+      },
+    });
+
+    return data;
   }
 
   update(user: Users, id: Number, updateTodosDto: UpdateTodosDto) {

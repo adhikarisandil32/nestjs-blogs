@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateTodosDto } from '../dto/create-todos.dto';
 import { UpdateTodosDto } from '../dto/update-todos.dto';
 import {
@@ -40,24 +40,26 @@ export class TodosControllerAdmin {
   }
 
   @ApiOperation({ summary: 'List all todos' })
-  @Get()
+  @Get('user/:userId')
   @ResponseMessage('Todos fetch success')
   @ShowPagination()
   @PutAdmin()
-  // @SetMetadata('ShowPagination', true)
   findAllPaginated(
-    @User() user: Users,
+    @Param('userId') userId: string,
     @Query() searchParams: PaginatedQueryDto,
   ): {} {
-    return this.todosService.findAllPaginated(user, { searchParams });
+    return this.todosService.findAllPaginated({
+      userId: +userId,
+      searchParams,
+    });
   }
 
   @ApiOperation({ summary: 'List a todos by id' })
   @ResponseMessage('Todo fetch success')
-  @Get(':id')
+  @Get(':todosId')
   @PutAdmin()
-  findOne(@User() user: Users, @Param('id') id: string) {
-    return this.todosService.findOne(user, +id);
+  findOne(@Param('todosId') todosId: string) {
+    return this.todosService.findOne(+todosId);
   }
 
   @ApiOperation({ summary: 'Update a todo' })
@@ -72,8 +74,7 @@ export class TodosControllerAdmin {
     return this.todosService.update(user, +id, updateTodosDto);
   }
 
-  @ApiOperation({ summary: 'Delete a todo' })
-  // @ApiExcludeEndpoint() // this will hide the endpoint from swagger
+  @ApiExcludeEndpoint() // this will hide the endpoint from swagger
   @ResponseMessage('Todo delete success')
   @Delete(':id')
   @PutAdmin()
