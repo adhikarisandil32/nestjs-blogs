@@ -95,10 +95,6 @@ export class UsersServiceAdmin {
     return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
-
   async prepareUserCreateData(createUserDto: CreateUserDto) {
     const publicUserRole = await this._dataSource.manager.findOne(Roles, {
       where: {

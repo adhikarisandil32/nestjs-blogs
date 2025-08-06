@@ -48,11 +48,4 @@ export class UsersControllerAdmin {
   ) {
     return this.usersService.update(+userId, updateUserDto);
   }
-
-  @ApiExcludeEndpoint()
-  @PutAdmin()
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
-  }
 }
