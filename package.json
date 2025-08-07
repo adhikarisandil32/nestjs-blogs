@@ -22,6 +22,7 @@
     "migration:create": "npm run typeorm -- migration:create",
     "migration:generate": "npm run typeorm -- -d src/data-source.ts migration:generate",
     "migration:run": "npm run typeorm -- -d src/data-source.ts migration:run",
+    "migration:run:fake": "npm run migration:run --fake",
     "migration:revert": "npm run typeorm -- -d src/data-source.ts migration:revert",
     "seed:users": "npx nestjs-command seed-users",
     "seed:todos": "npx nestjs-command seed-todos",
