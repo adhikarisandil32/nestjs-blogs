@@ -1,9 +1,6 @@
 import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
-import { Admins } from 'src/modules/admins/entities/admin.entity';
-import { Roles } from 'src/modules/roles/entities/role.entity';
-import { Users } from 'src/modules/users/entities/user.entity';
+import { CommonUser } from 'src/modules/common-users/entities/common-user.entity';
 import {
-  Check,
   Column,
   Entity,
   JoinColumn,
@@ -13,7 +10,6 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Check(`author_user_id is not null or author_admin_id is not null`)
 export class Posts extends DBBaseEntity {
   @Column({ name: 'title', nullable: false })
   title: string;
@@ -21,17 +17,13 @@ export class Posts extends DBBaseEntity {
   @Column({ name: 'content', nullable: false })
   content: string;
 
-  // see polymorphic relationship for relating to multiple entities
+  @ManyToOne(() => CommonUser, (commonUser) => commonUser.id, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'author_id' })
+  author: CommonUser;
 
-  @ManyToOne(() => Users, (user) => user.id, { nullable: false })
-  @JoinColumn({ name: 'author_user_id' })
-  author_user: Users;
-
-  @ManyToOne(() => Roles, (role) => role.id, { nullable: false })
-  @JoinColumn({ name: 'author_role_id' })
-  author_role: Roles;
-
-  @ManyToMany(() => Users, (user) => user.id)
+  @ManyToMany(() => CommonUser, (commonUser) => commonUser.id)
   @JoinTable({
     name: 'posts_contributors',
     joinColumn: {
@@ -43,5 +35,5 @@ export class Posts extends DBBaseEntity {
       referencedColumnName: 'id',
     },
   })
-  contributors: Users[];
+  contributors: CommonUser[];
 }
