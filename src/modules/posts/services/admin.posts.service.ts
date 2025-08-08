@@ -5,11 +5,9 @@ import { Admins } from 'src/modules/admins/entities/admin.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Posts } from '../entities/post.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Users } from 'src/modules/users/entities/user.entity';
-import { PutAdmin } from 'src/modules/auth/decorator/put-user.decorator';
-import { ResponseMessage } from 'src/common-modules/response/decorators/response.decorator';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
+import { CommonUser } from 'src/modules/common-users/entities/common-user.entity';
 
 @Injectable()
 export class PostsServiceAdmin {
@@ -37,12 +35,7 @@ export class PostsServiceAdmin {
       validSortFields: [],
       queryOptions: {
         select: {
-          // author_admin: {
-          //   id: true,
-          //   email: true,
-          //   name: true,
-          // },
-          author_user: {
+          author: {
             id: true,
             email: true,
             name: true,
@@ -54,8 +47,7 @@ export class PostsServiceAdmin {
           },
         },
         relations: {
-          // author_admin: true,
-          author_user: true,
+          author: true,
           contributors: true,
         },
       },
@@ -76,15 +68,18 @@ export class PostsServiceAdmin {
     return `This action removes a #${id} post`;
   }
 
-  async prepareCreateData(admin: Admins, createPostDto: CreatePostDto) {
+  async prepareCreateData(
+    admin: Admins,
+    createPostDto: CreatePostDto,
+  ): Promise<Partial<Posts>> {
     try {
-      const contributingUsers = await Promise.all([
-        ...createPostDto.contributors.map((contributor) =>
-          this._dataSource.manager.findOne(Users, {
+      const contributingUsers = await Promise.all(
+        createPostDto.contributors.map((contributor) =>
+          this._dataSource.manager.findOne(CommonUser, {
             where: { id: contributor },
           }),
         ),
-      ]);
+      );
 
       const author = await this._dataSource.manager.findOne(Admins, {
         where: { id: admin.id },
@@ -92,7 +87,7 @@ export class PostsServiceAdmin {
 
       return {
         ...createPostDto,
-        author_admin: author,
+        author: author,
         contributors: contributingUsers,
       };
     } catch (error) {
