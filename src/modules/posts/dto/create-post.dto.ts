@@ -1,7 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Users } from 'src/modules/users/entities/user.entity';
 
 export class CreatePostDto {
   @ApiProperty({
@@ -18,7 +16,7 @@ export class CreatePostDto {
   })
   @IsString()
   @IsNotEmpty()
-  description: string;
+  content: string;
 
   @ApiPropertyOptional({
     type: 'number',
