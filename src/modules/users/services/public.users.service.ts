@@ -11,6 +11,7 @@ import { Users } from '../entities/user.entity';
 import { Roles } from 'src/modules/roles/entities/role.entity';
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Admins } from 'src/modules/admins/entities/admin.entity';
+import { CommonUser } from 'src/modules/common-users/entities/common-user.entity';
 
 @Injectable()
 export class UsersServicePublic {
@@ -41,7 +42,10 @@ export class UsersServicePublic {
 
     const user = this.usersRepository.create(preparedData);
 
-    await this.usersRepository.save(user);
+    await Promise.all([
+      this.usersRepository.save(user),
+      this._dataSource.manager.save(CommonUser, user),
+    ]);
 
     return user;
   }
@@ -53,10 +57,14 @@ export class UsersServicePublic {
     user: Users;
     updateUserDto: UpdateUserDto;
   }) {
-    const afterUpdate = await this.usersRepository.update(
-      user.id,
-      updateUserDto,
-    );
+    const [afterUpdate, _] = await Promise.all([
+      this.usersRepository.update(user.id, updateUserDto),
+      this._dataSource.manager.update(
+        CommonUser,
+        { email: user.email },
+        updateUserDto,
+      ),
+    ]);
 
     if (afterUpdate.affected <= 0) {
       throw new NotFoundException('user not found');

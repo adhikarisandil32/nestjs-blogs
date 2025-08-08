@@ -12,6 +12,7 @@ import { UserRole } from 'src/constants/user-roles.constant';
 import { Roles } from 'src/modules/roles/entities/role.entity';
 import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
+import { CommonUser } from 'src/modules/common-users/entities/common-user.entity';
 
 @Injectable()
 export class UsersServiceAdmin {
@@ -42,7 +43,10 @@ export class UsersServiceAdmin {
 
     const user = this.usersRepository.create(preparedData);
 
-    await this.usersRepository.save(user);
+    await Promise.all([
+      this.usersRepository.save(user),
+      this._dataSource.manager.save(CommonUser, user),
+    ]);
 
     return user;
   }
@@ -82,15 +86,21 @@ export class UsersServiceAdmin {
   async update(id: number, updateUserDto: UpdateUserDto) {
     const prepareUpdateUserData = this.usersRepository.create(updateUserDto);
 
-    const afterUpdate = await this.usersRepository.update(
+    const afterUpdateUsers = await this.usersRepository.update(
       id,
       prepareUpdateUserData,
     );
 
     let data: Users;
-    if (afterUpdate.affected > 0) {
+    if (afterUpdateUsers.affected > 0) {
       data = await this.usersRepository.findOne({ where: { id } });
     }
+
+    await this._dataSource.manager.update(
+      CommonUser,
+      { email: data.email },
+      prepareUpdateUserData,
+    );
 
     return data;
   }
