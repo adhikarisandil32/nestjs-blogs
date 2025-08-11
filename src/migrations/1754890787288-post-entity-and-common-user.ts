@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class PostEntityAndCommonUser1754649666278 implements MigrationInterface {
-    name = 'PostEntityAndCommonUser1754649666278'
+export class PostEntityAndCommonUser1754890787288 implements MigrationInterface {
+    name = 'PostEntityAndCommonUser1754890787288'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "common_users" ("id" SERIAL NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, "name" character varying NOT NULL, "email" character varying NOT NULL, "password" character varying NOT NULL, "role_id" integer NOT NULL, CONSTRAINT "UQ_177077b628f1559bf7f353e7fe5" UNIQUE ("email"), CONSTRAINT "PK_c8b5d0b4515c71bbf1630cfd8e8" PRIMARY KEY ("id"))`);
