@@ -26,6 +26,7 @@
     "migration:revert": "npm run typeorm -- -d src/data-source.ts migration:revert",
     "seed:users": "npx nestjs-command seed-users",
     "seed:todos": "npx nestjs-command seed-todos",
+    "sync:users": "npx nestjs-command sync-common-users",
     "doc": "npx compodoc -p tsconfig.json",
     "doc-auto": "pnpm exec compodoc -p tsconfig.json -s --port 3376 --watch -d ./documentation"
   },
