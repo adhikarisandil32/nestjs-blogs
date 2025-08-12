@@ -12,7 +12,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       useClass: ResponseInterceptor,
     },
     {
-      // is will use @Exclude() serilizer options globally
+      // is will use @Exclude() like serilizers options globally
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },
