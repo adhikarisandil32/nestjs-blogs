@@ -70,7 +70,9 @@ export class SyncCommonUsersTable {
         `);
       }
 
-      console.log(`data inserted:\n`, dataReadyToInsert);
+      console.log(
+        `${dataReadyToInsert.length} data inserted to common_users table`,
+      );
 
       await queryRunner.commitTransaction();
 
