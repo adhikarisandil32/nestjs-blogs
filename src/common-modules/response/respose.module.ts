@@ -7,10 +7,12 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
   controllers: [],
   providers: [
     {
+      // provide interceptors globally
       provide: APP_INTERCEPTOR,
       useClass: ResponseInterceptor,
     },
     {
+      // is will use @Exclude() like serilizers options globally
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
     },

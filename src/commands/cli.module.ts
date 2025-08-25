@@ -4,10 +4,16 @@ import { DatabaseModule } from '../common-modules/database/database.module';
 import { SeedUsersDatabase } from './user-seed.command';
 import { SeedTodoDatabase } from './todo-seed.command';
 import { CommandModule } from 'nestjs-command';
+import { SyncCommonUsersTable } from './sync-users.command';
 
 // console.log(__dirname)
 @Module({
   imports: [CommandModule, DatabaseModule],
-  providers: [MyLogger, SeedUsersDatabase, SeedTodoDatabase],
+  providers: [
+    MyLogger,
+    SeedUsersDatabase,
+    SeedTodoDatabase,
+    SyncCommonUsersTable,
+  ],
 })
 export class CliModule {}

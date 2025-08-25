@@ -104,15 +104,13 @@ export async function seedAdmin(
 ) {
   const AdminSeedingContext = 'seed-admin';
 
-  const existingAdmins = await queryRunner.manager.find(Admins);
+  const existingAdmins = await queryRunner.manager.find(Admins, {
+    where: {
+      email: 'admin@gmail.com',
+    },
+  });
 
-  const myAdminUser = existingAdmins.find(
-    (existingAdmin) =>
-      existingAdmin.email.toLowerCase() === 'admin@gmail.com' &&
-      existingAdmin.role.role === UserRole.ADMIN,
-  );
-
-  if (myAdminUser) {
+  if (existingAdmins) {
     loggerService.log('admin seed start', AdminSeedingContext);
     loggerService.log('admin seed succcess', AdminSeedingContext);
     return;

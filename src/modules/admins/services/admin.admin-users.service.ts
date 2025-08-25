@@ -9,6 +9,7 @@ import { UserRole } from 'src/constants/user-roles.constant';
 import { Users } from 'src/modules/users/entities/user.entity';
 import { PaginatedQueryDto } from 'src/common-modules/swagger-docs/paginate-query.dto';
 import { findAllPaginatedData } from 'src/common-modules/utils/functions/common-query';
+import { CommonUser } from 'src/modules/common-users/entities/common-user.entity';
 
 @Injectable()
 export class AdminsServiceAdmin {
@@ -36,8 +37,15 @@ export class AdminsServiceAdmin {
 
     const preparedData = await this.prepareDataToCreateAdmin(createAdminDto);
     const admin = this.adminsRepository.create(preparedData);
+    const commonUser = this._dataSource.manager.create(
+      CommonUser,
+      preparedData,
+    );
 
-    await this.adminsRepository.save(admin);
+    await Promise.all([
+      this.adminsRepository.save(admin),
+      this._dataSource.manager.save(CommonUser, commonUser),
+    ]);
 
     return admin;
   }
@@ -92,7 +100,14 @@ export class AdminsServiceAdmin {
   }) {
     const preparedUpdate = this.adminsRepository.create(updateAdminDto);
 
-    await this.adminsRepository.update(admin.id, preparedUpdate);
+    await Promise.all([
+      this.adminsRepository.update(admin.id, preparedUpdate),
+      this._dataSource.manager.update(
+        CommonUser,
+        { email: admin.email },
+        preparedUpdate,
+      ),
+    ]);
 
     const updatedData = await this.adminsRepository.findOne({
       where: {
