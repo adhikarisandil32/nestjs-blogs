@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { seedAdmin, seedUserRoles, seedUsers } from './seed-helper';
-import { MyLogger } from 'src/common-modules/logger.service';
+import { MyLogger } from 'src/common-modules/logger/logger.service';
 
 @Injectable()
 export class SeedUsersDatabase {

@@ -1,7 +1,7 @@
 import { UserRole } from 'src/constants/user-roles.constant';
 import { Roles } from 'src/modules/roles/entities/role.entity';
 import { QueryRunner } from 'typeorm';
-import { MyLogger } from 'src/common-modules/logger.service';
+import { MyLogger } from 'src/common-modules/logger/logger.service';
 import { faker } from '@faker-js/faker';
 import { Users } from 'src/modules/users/entities/user.entity';
 import { Admins } from 'src/modules/admins/entities/admin.entity';

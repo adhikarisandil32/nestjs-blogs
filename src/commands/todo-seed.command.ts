@@ -1,4 +1,4 @@
-import { MyLogger } from 'src/common-modules/logger.service';
+import { MyLogger } from 'src/common-modules/logger/logger.service';
 import { DataSource } from 'typeorm';
 import { Todos } from 'src/modules/todos/entities/todos.entity';
 import { Command } from 'nestjs-command';
