@@ -110,7 +110,7 @@ export async function seedAdmin(
     },
   });
 
-  if (existingAdmins) {
+  if (existingAdmins && existingAdmins.length > 1) {
     loggerService.log('admin seed start', AdminSeedingContext);
     loggerService.log('admin seed succcess', AdminSeedingContext);
     return;
