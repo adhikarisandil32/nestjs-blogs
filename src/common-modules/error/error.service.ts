@@ -1,10 +1,15 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { MyLogger } from '../logger.service';
+import { ArgumentsHost, Catch, ExceptionFilter, Inject } from '@nestjs/common';
+// import { MyLogger } from '../logger/logger.service';
 import { Request, Response } from 'express';
+import pino from 'pino';
+import { PINO_LOGGER_CONSTANT } from '../logger/logger.constant';
 
 @Catch()
 export class ErrorService implements ExceptionFilter {
-  constructor(private readonly _loggerService: MyLogger) {}
+  constructor(
+    @Inject(PINO_LOGGER_CONSTANT)
+    private readonly _loggerService: pino.Logger,
+  ) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -21,11 +26,11 @@ export class ErrorService implements ExceptionFilter {
       ? exceptionResponse.message?.[0]
       : exceptionResponse.message;
 
-    this._loggerService.error(exceptionResponse, exception.stack, 'app-error');
+    this._loggerService.error(exceptionResponse, exception.stack);
 
     response.status(status).json({
       message: errorMessage || 'Request Failed',
-      status,
+      status: status ?? 500,
       success: status < 400,
       date: Date.now(),
       path: request.url,

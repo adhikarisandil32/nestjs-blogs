@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Command } from 'nestjs-command';
-import { MyLogger } from 'src/common-modules/logger.service';
+import { MyLogger } from 'src/common-modules/logger/logger.service';
 import { DataSource } from 'typeorm';
 
 /**************************************************
