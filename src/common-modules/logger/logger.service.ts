@@ -1,7 +1,8 @@
 // As pino logs directly into the file, this is not used. if we want to use it to log into the terminal, that can be done.
 
-import { ConsoleLogger } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class MyLogger extends ConsoleLogger {
   log(message: any, context?: string) {
     if (

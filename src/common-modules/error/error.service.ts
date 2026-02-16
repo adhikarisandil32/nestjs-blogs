@@ -3,12 +3,14 @@ import { ArgumentsHost, Catch, ExceptionFilter, Inject } from '@nestjs/common';
 import { Request, Response } from 'express';
 import pino from 'pino';
 import { PINO_LOGGER_CONSTANT } from '../logger/logger.constant';
+import { MyLogger } from '../logger/logger.service';
 
 @Catch()
 export class ErrorService implements ExceptionFilter {
   constructor(
     @Inject(PINO_LOGGER_CONSTANT)
     private readonly _loggerService: pino.Logger,
+    private readonly _appLoggerService: MyLogger,
   ) {}
 
   catch(exception: any, host: ArgumentsHost) {
@@ -23,10 +25,11 @@ export class ErrorService implements ExceptionFilter {
     // console.log(exception);
 
     const errorMessage = Array.isArray(exceptionResponse.message)
-      ? exceptionResponse.message?.[0]
+      ? exceptionResponse.message?.join(';')
       : exceptionResponse.message;
 
     this._loggerService.error(exceptionResponse, exception.stack);
+    this._appLoggerService.error(exceptionResponse, exception.stack);
 
     response.status(status).json({
       message: errorMessage || 'Request Failed',
