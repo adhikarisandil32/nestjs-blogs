@@ -40,14 +40,14 @@ export class ResponseInterceptor implements NestInterceptor {
           data = dataFromService;
         }
 
-        if (!showPagination || count == null) {
-          return {
-            message: message ?? 'Request Success',
-            status: response.statusCode,
-            success: response.statusCode < 400,
-            ...(data ? { data } : {}),
-          };
-        }
+        // if (!showPagination) {
+        //   return {
+        //     message: message ?? 'Request Success',
+        //     status: response.statusCode,
+        //     success: response.statusCode < 400,
+        //     ...(data ? { data } : {}),
+        //   };
+        // }
 
         let _paginationMetadata: IPaginationMetadata;
 
