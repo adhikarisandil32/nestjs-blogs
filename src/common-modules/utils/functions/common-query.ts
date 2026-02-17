@@ -17,7 +17,7 @@ export async function findAllPaginatedData<Entity>(
   }
 
   const currentPage = +(options.page ?? 1) > 1 ? +(options.page ?? 1) : 1;
-  const limit = +(options.limit ?? 10);
+  const limit = (options.limit ?? 10) < 10 ? 10 : (options.limit ?? 10);
   const offset = (currentPage - 1) * limit;
 
   options.queryOptions = {
