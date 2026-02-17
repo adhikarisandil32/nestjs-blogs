@@ -19,7 +19,7 @@ export class ErrorService implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    const exceptionResponse = exception.getResponse();
+    const exceptionResponse = { ...exception.getResponse(), path: request.url };
 
     // console.log(exceptionResponse, exception.stack);
     // console.log(exception);
@@ -28,7 +28,7 @@ export class ErrorService implements ExceptionFilter {
       ? exceptionResponse.message?.join(';')
       : exceptionResponse.message;
 
-    this._loggerService.error(exceptionResponse, exception.stack);
+    this._loggerService.error(exceptionResponse);
     this._appLoggerService.error(exceptionResponse, exception.stack);
 
     response.status(status).json({
