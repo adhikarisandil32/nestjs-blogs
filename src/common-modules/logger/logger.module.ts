@@ -24,7 +24,7 @@ import pino from 'pino';
         const logger = pino({
           transport: {
             target: 'pino/file',
-            options: { destination: `./app.log`, append: false },
+            options: { destination: `./app.log` },
           },
         });
 
