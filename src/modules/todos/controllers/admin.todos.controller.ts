@@ -27,6 +27,15 @@ import { TodosServiceAdmin } from '../services/admin.todos.service';
 export class TodosControllerAdmin {
   constructor(private readonly todosService: TodosServiceAdmin) {}
 
+  @ApiOperation({ summary: 'Get All Todos' })
+  @Get('list-all')
+  @PutAdmin()
+  async getAllTodos(@Query() paginateQuery: PaginatedQueryDto) {
+    return await this.todosService.findAllPaginated({
+      searchParams: paginateQuery,
+    });
+  }
+
   // look at https://stackoverflow.com/questions/62700524/nest-js-only-accept-fields-that-are-specified-in-a-dto
   @ApiOperation({ summary: 'Create a new todo' })
   @Post('create')
