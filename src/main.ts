@@ -13,6 +13,11 @@ async function bootstrap() {
   //   app.setGlobalPrefix(API_PREFIX);
   // }
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  });
+
   /* Swagger Setup moved to swagger.ts file */
   await swaggerInit(app);
 
