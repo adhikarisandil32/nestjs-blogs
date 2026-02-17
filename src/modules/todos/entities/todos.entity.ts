@@ -16,4 +16,11 @@ export class Todos extends DBBaseEntity {
   @ManyToOne(() => Users, (user) => user.id, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: Users;
+
+  @Column({
+    name: 'description_tsv',
+    type: 'tsvector',
+    nullable: true,
+  })
+  descriptionTsv: string;
 }
