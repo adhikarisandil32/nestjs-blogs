@@ -17,26 +17,42 @@ export class ErrorService implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
+    try {
+      const status = exception.getStatus();
 
-    const exceptionResponse = { ...exception.getResponse(), path: request.url };
+      const exceptionResponse = {
+        ...exception.getResponse(),
+        path: request.url,
+      };
 
-    // console.log(exceptionResponse, exception.stack);
-    // console.log(exception);
+      // console.log(exceptionResponse, exception.stack);
+      // console.log(exception);
 
-    const errorMessage = Array.isArray(exceptionResponse.message)
-      ? exceptionResponse.message?.join(';')
-      : exceptionResponse.message;
+      const errorMessage = Array.isArray(exceptionResponse.message)
+        ? exceptionResponse.message?.join(';')
+        : exceptionResponse.message;
 
-    this._loggerService.error(exceptionResponse);
-    this._appLoggerService.error(exceptionResponse, exception.stack);
+      this._loggerService.error(exceptionResponse);
+      this._appLoggerService.error(exceptionResponse, exception.stack);
 
-    response.status(status).json({
-      message: errorMessage || 'Request Failed',
-      status: status ?? 500,
-      success: status < 400,
-      date: Date.now(),
-      path: request.url,
-    });
+      response.status(status).json({
+        message: errorMessage || 'Request Failed',
+        status: status ?? 500,
+        success: status < 400,
+        date: Date.now(),
+        path: request.url,
+      });
+    } catch (error) {
+      this._loggerService.error(error);
+      this._appLoggerService.error(error, error.stack);
+
+      response.status(500).json({
+        message: error.message,
+        status: 500,
+        success: false,
+        date: Date.now(),
+        path: request.url,
+      });
+    }
   }
 }
