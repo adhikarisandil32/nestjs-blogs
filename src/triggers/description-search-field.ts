@@ -9,10 +9,13 @@ export const addDescriptionSearchField = async (queryRunner: QueryRunner) => {
         IF NEW.description IS NULL THEN
           NEW.description_tsv := NULL;
         ELSE
-          NEW.description_tsv := to_tsvector("english", NEW.description);
-        ENDIF;
+          NEW.description_tsv := to_tsvector('english', NEW.description);
+        END IF;
+
         NEW.updated_at :=  CURRENT_TIMESTAMP;
         RAISE NOTICE 'Trigger Executed: %', NEW.title;
+        RETURN NEW;
+
       EXCEPTION WHEN OTHERS THEN
         RAISE WARNING 'Error in tsvector trigger: %', SQLERRM;
         RETURN NEW;
@@ -25,7 +28,7 @@ export const addDescriptionSearchField = async (queryRunner: QueryRunner) => {
     DROP TRIGGER IF EXISTS before_insert_todos ON todos;  
   `);
   await queryRunner.query(`
-    DRP TRIGGER IF EXISTS before_update_todos ON todos;  
+    DROP TRIGGER IF EXISTS before_update_todos ON todos;  
   `);
 
   await queryRunner.query(`
