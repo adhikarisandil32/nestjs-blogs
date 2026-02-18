@@ -1,7 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddTriggerOnTodos1771413248057 implements MigrationInterface {
-  name = 'AddTriggerOnTodos1771413248057';
+export class TodosDesciptionTsvColumn1771440291875
+  implements MigrationInterface
+{
+  name = 'TodosDesciptionTsvColumn1771440291875';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
