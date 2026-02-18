@@ -1,6 +1,6 @@
 import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
 import { Users } from 'src/modules/users/entities/user.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 
 @Entity()
 export class Todos extends DBBaseEntity {
@@ -22,5 +22,6 @@ export class Todos extends DBBaseEntity {
     type: 'tsvector',
     nullable: true,
   })
+  @Index('desctiption_tsv_index', { synchronize: false })
   descriptionTsv: string;
 }
