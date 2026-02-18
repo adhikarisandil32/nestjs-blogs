@@ -22,6 +22,6 @@ export class Todos extends DBBaseEntity {
     type: 'tsvector',
     nullable: true,
   })
-  @Index('desctiption_tsv_index', { synchronize: false })
+  @Index('description_tsv_index', { synchronize: false })
   descriptionTsv: string;
 }
