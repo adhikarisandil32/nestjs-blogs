@@ -29,7 +29,7 @@ export class TodosServiceAdmin {
     const data = await findAllPaginatedData<Todos>({
       ...searchParams,
       repo: this.todosRepository,
-      validSearchFields: ['title', 'description'],
+      validSearchFields: ['@@descriptionTsv'],
       validSortFields: [],
       queryOptions: userId
         ? {
