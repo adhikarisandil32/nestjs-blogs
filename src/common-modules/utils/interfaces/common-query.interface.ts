@@ -4,6 +4,6 @@ import { FindManyOptions, Repository } from 'typeorm';
 export interface ICommonOptions<T> extends PaginatedQueryDto {
   repo: Repository<T>;
   queryOptions: FindManyOptions<T>;
-  validSearchFields: (keyof T)[];
-  validSortFields: (keyof T)[];
+  validSearchFields: (keyof T | string)[];
+  validSortFields: (keyof T | string)[];
 }
