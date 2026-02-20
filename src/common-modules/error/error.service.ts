@@ -18,6 +18,7 @@ export class ErrorService implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     try {
+      console.log(exception);
       const status = exception.getStatus();
 
       const exceptionResponse = {
