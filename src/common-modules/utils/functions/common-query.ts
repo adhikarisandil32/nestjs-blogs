@@ -17,18 +17,30 @@ export async function findAllPaginatedData<Entity>(
     qb.orderBy(columnName, options.sortOrder);
   }
 
-  if (options.validSearchFields.includes(options.searchField as keyof Entity)) {
-    // search[options.searchField] = ILike(`%${options.search ?? ''}%`);
-    const columnName = `${alias}.${options.searchField}`;
-    qb.where(`${columnName} ILIKE :search`, { search: `%${options.search}%` });
-  }
-
   const tsvSearchField = options.validSearchFields
     .filter(
       (validSf: string) =>
         validSf.includes(options.searchField) && validSf.startsWith('@@'),
     )
-    .map((sf: string) => sf.replace('@@', ''));
+    .map((sf: string) => sf.replace('@@', ''))[0];
+
+  if (tsvSearchField && options.search?.trim().length > 0) {
+    const columnName = `${alias}.${tsvSearchField}`;
+    qb.orWhere(`${columnName} @@ to_tsquery('english', :search)`, {
+      search: options.search
+        .split(/\s+/) // because split on " " fails on multiple spaces
+        .map((word) => `${word.trim()}:*`)
+        .join(' & '),
+    });
+  }
+
+  if (options.validSearchFields.includes(options.searchField as keyof Entity)) {
+    // search[options.searchField] = ILike(`%${options.search ?? ''}%`);
+    const columnName = `${alias}.${options.searchField}`;
+    qb.where(`${columnName} ILIKE :search`, {
+      search: `%${options.search ?? ''}%`,
+    });
+  }
 
   const currentPage = +(options.page ?? 1) > 1 ? +(options.page ?? 1) : 1;
   const limit = (options.limit ?? 10) < 10 ? 10 : (options.limit ?? 10);
@@ -43,5 +55,5 @@ export async function findAllPaginatedData<Entity>(
 
   // console.log(options.queryOptions);
 
-  return await options.repo.findAndCount(options.queryOptions);
+  return await qb.getManyAndCount();
 }
