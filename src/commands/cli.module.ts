@@ -5,6 +5,7 @@ import { SeedUsersDatabase } from './user-seed.command';
 import { SeedTodoDatabase } from './todo-seed.command';
 import { CommandModule } from 'nestjs-command';
 import { SyncCommonUsersTable } from './sync-users.command';
+import { AddTriggers, RemoveTriggers } from './add-trigger.command';
 
 // console.log(__dirname)
 @Module({
@@ -14,6 +15,8 @@ import { SyncCommonUsersTable } from './sync-users.command';
     SeedUsersDatabase,
     SeedTodoDatabase,
     SyncCommonUsersTable,
+    AddTriggers,
+    RemoveTriggers,
   ],
 })
 export class CliModule {}

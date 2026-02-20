@@ -36,7 +36,7 @@ export class PaginatedQueryDto {
   })
   @IsOptional()
   @IsString()
-  sortOrder: string;
+  sortOrder: 'ASC' | 'DESC';
 
   @ApiPropertyOptional({
     type: 'integer',

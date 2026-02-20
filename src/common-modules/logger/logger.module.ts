@@ -15,6 +15,8 @@ import pino from 'pino';
   //     },
   //   }),
   // ],
+
+  // transport: {target: "pino-roll"}. `pino-roll` can be used to create different log files on a defined frequency (say of daily, weekly, etc) to capture the logs of that specified frequency.
   providers: [
     {
       provide: PINO_LOGGER_CONSTANT,

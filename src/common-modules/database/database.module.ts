@@ -18,6 +18,7 @@ dotenv.config();
         entities: [__dirname + './../../**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         synchronize: false,
+        logging: ['query'],
       }),
       dataSourceFactory: async (options) => {
         const datasource = await new DataSource(options).initialize();

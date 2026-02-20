@@ -1,6 +1,6 @@
 import { DBBaseEntity } from 'src/common-modules/entities/base.entity';
 import { Users } from 'src/modules/users/entities/user.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 
 @Entity()
 export class Todos extends DBBaseEntity {
@@ -16,4 +16,12 @@ export class Todos extends DBBaseEntity {
   @ManyToOne(() => Users, (user) => user.id, { nullable: false })
   @JoinColumn({ name: 'user_id' })
   user: Users;
+
+  @Column({
+    name: 'description_tsv',
+    type: 'tsvector',
+    nullable: true,
+  })
+  @Index('description_tsv_index', { synchronize: false })
+  descriptionTsv: string;
 }

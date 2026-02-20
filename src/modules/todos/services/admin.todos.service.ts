@@ -23,29 +23,31 @@ export class TodosServiceAdmin {
     userId,
     searchParams,
   }: {
-    userId: number;
-    searchParams: PaginatedQueryDto;
+    userId?: number;
+    searchParams?: PaginatedQueryDto;
   }) {
     const data = await findAllPaginatedData<Todos>({
       ...searchParams,
       repo: this.todosRepository,
-      validSearchFields: [],
+      validSearchFields: ['@@descriptionTsv'],
       validSortFields: [],
-      queryOptions: {
-        where: {
-          user: {
-            id: userId,
-          },
-        },
-        select: {
-          id: true,
-          title: true,
-          deletedAt: true,
-          createdAt: true,
-          updatedAt: true,
-          isCompleted: true,
-        },
-      },
+      queryOptions: userId
+        ? {
+            where: {
+              user: {
+                id: userId,
+              },
+            },
+            select: {
+              id: true,
+              title: true,
+              deletedAt: true,
+              createdAt: true,
+              updatedAt: true,
+              isCompleted: true,
+            },
+          }
+        : {},
     });
 
     return data;
